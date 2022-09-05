@@ -19,10 +19,6 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.get("/", function(req, res) {
-  res.send(console.log("First test"))
-})
-
-// app.use('/api/user', userRoutes)
+app.use('/api/user', userRoutes)
 
 module.exports = app;
