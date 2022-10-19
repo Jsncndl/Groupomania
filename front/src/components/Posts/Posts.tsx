@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
 import { PostWrapper } from "../PostWrapper/PostWrapper";
 
-const MainContainer = styled.main`
+const MainContainer = styled.div`
   width: 60%;
   margin: auto;
   border-radius: 15px;

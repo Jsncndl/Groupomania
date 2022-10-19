@@ -9,6 +9,7 @@ const NewPostContainer = styled.div`
   margin: 25px auto;
   background-color: white;
   border-radius: 15px;
+  box-shadow: 0px 0px 4px ${colors.tertiary};
 `;
 
 const FormContainer = styled.form`
