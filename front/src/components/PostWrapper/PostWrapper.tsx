@@ -1,9 +1,14 @@
+import dayjs from "dayjs";
+import locale from "dayjs/locale/fr";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
 import colors from "../../utils/style/colors";
 import { Button } from "../Button/Button";
+
+dayjs.extend(relativeTime);
 
 interface PostProps {
   _id: string;
@@ -109,8 +114,8 @@ export const PostWrapper = ({
         </div>
         {userId === currentUser.userId ? (
           <div data-id={_id}>
-            <Link to={`/post=${_id}`} >
-            <button>Modifier</button>
+            <Link to={`/post=${_id}`}>
+              <button>Modifier</button>
             </Link>
             <button onClick={handleDeleteButton}>Supprimer</button>
           </div>
@@ -124,19 +129,7 @@ export const PostWrapper = ({
             <PostImage src={imageUrl} alt={`Publication de ${userFirstName}`} />
           </PostImageWrapper>
         ) : null}
-
-        <div>
-          {date.toLocaleString("fr", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-          ,{" "}
-          {date.toLocaleString("fr", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </div>
+        <div>{dayjs(date).locale(locale).fromNow()}</div>
         <div data-id={_id}>
           {likes} personnes aiment ce post.
           <input type="button" onClick={handleLike} value={"J'aime"} />
