@@ -1,10 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const path = require("path")
 
 const app = express()
 
 const userRoutes = require('./routes/user')
+const postRoutes = require('./routes/post')
+const commentRoutes = require('./routes/comment')
 
 mongoose.connect(process.env.DB_AUTH, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log("Connect to DB"))
@@ -20,5 +23,9 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 app.use('/api/user', userRoutes)
+app.use('/api/post', postRoutes)
+app.use('/api/comment', commentRoutes)
+
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 module.exports = app;
