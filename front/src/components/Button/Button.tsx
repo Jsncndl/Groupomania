@@ -13,6 +13,7 @@ const ButtonLogin = styled.button`
   margin: 0;
   box-shadow: inset 1px 1px 2px ${colors.secondary};
   background-color: white;
+  cursor: pointer;
   &:active {
     color: ${colors.primary};
   }
@@ -27,23 +28,23 @@ const ButtonSignup = styled.button`
   margin: 0;
   box-shadow: inset -1px 1px 2px ${colors.secondary};
   background-color: white;
+  cursor: pointer;
   &:active {
     color: ${colors.primary};
   }
 `;
 
 const ButtonConfirm = styled.button`
-  padding: 15px 50px;
+  padding: 15px;
   width: 50%;
   border: 0px;
   border-radius: 50px;
   font-size: 16px;
   background-color: ${colors.primary};
   color: white;
-  transition: transform;
-  transition-timing-function: ease;
-  transition-duration: 500ms;
   align-self: center;
+  transition: transform 500ms ease;
+  cursor: pointer;
   &:hover {
     transform: scale(105%);
   }

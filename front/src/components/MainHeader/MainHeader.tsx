@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
+import logoLogout from "../../assets/logout.svg"
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
 
 const HeaderContainer = styled.header`
@@ -17,8 +18,10 @@ const HeaderContainer = styled.header`
 const NavContainer = styled.nav`
   display: flex;
   align-items: center;
-  width: 30%;
+  width: fit-content;
+  gap: 30px;
   justify-content: space-around;
+  margin: 0 30px;
 `;
 
 const LogoContainer = styled.img`
@@ -31,7 +34,11 @@ const ProfileImageWrapper = styled(Link)`
   align-items: center;
   justify-content: center;
   height: 50px;
-  width: 50px;
+  min-height: 50px;
+  max-height: 50px;
+  height: 50px;
+  min-width: 50px;
+  max-width: 50px;
   overflow: hidden;
   border-radius: 100%;
   background-color: blue;
@@ -41,17 +48,35 @@ const ProfileImageContainer = styled.img`
   height: 100%;
 `;
 
-const LogoutButton = styled.button`
-  padding: 10px 15px;
-  border: 0px;
-  border-radius: 50px;
-  background-color: #fd2d01;
-  color: white;
+const LogoLogoutContainer = styled.button`
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 500ms ease;
+  &:hover{
+    transform: scale(105%);
+  }
+`;
+
+const LogoLogout = styled.img`
+  width: 100%;
+  opacity: 70%;
 `;
 
 export const MainHeader = () => {
+  const UserCtx = useUserContext();
 
-  const UserCtx = useUserContext()
+  const handleLogout = () => {
+    localStorage.clear();
+    UserCtx.logout();
+  };
 
   return (
     <HeaderContainer>
@@ -61,16 +86,14 @@ export const MainHeader = () => {
       <NavContainer>
         <div>Hello {UserCtx.userDetails.firstName} !</div>
         <ProfileImageWrapper to={"../user/" + UserCtx.userDetails.userId}>
-          <ProfileImageContainer src={UserCtx.userDetails.userImage} alt="Mon compte" />
+          <ProfileImageContainer
+            src={UserCtx.userDetails.userImage}
+            alt="Mon compte"
+          />
         </ProfileImageWrapper>
-        <LogoutButton
-          name={"logout"}
-          onClick={() => {
-            localStorage.clear();
-            UserCtx.logout()
-          }}>
-          Déconnexion
-        </LogoutButton>
+        <LogoLogoutContainer onClick={handleLogout}>
+          <LogoLogout src={logoLogout} />
+        </LogoLogoutContainer>
       </NavContainer>
     </HeaderContainer>
   );

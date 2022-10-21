@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import styled from "styled-components";
 import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
 import { PostWrapper } from "../PostWrapper/PostWrapper";
@@ -12,6 +13,7 @@ const MainContainer = styled.div`
 export const Posts: React.FC = () => {
   const PostsCtx = usePostContext();
 
+  PostsCtx.posts.sort((a, b) => {console.log(dayjs(a.date).unix() - dayjs(b.date).unix()); return dayjs(b.date).unix() - dayjs(a.date).unix()})
   return (
     <>
       {PostsCtx.posts.map((post, index) => {

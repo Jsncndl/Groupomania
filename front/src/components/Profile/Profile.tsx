@@ -4,7 +4,7 @@ import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext"
 import colors from "../../utils/style/colors";
 import { Button } from "../Button/Button";
 import { MainHeader } from "../MainHeader/MainHeader";
-import { ModifyProfile } from "../ModifyProfile.tsx/ModifyProfile";
+import { ModifyProfile } from "../ModifyProfile/ModifyProfile";
 
   ////////// CSS /////////
   const MainContainer = styled.main`

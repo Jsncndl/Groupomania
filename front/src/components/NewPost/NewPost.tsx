@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
 import colors from "../../utils/style/colors";
+import { Button } from "../Button/Button";
 
 const NewPostContainer = styled.div`
   width: 60%;
@@ -39,17 +40,6 @@ const TextareaContainer = styled.textarea`
   margin: 0px 0px 10px;
 `;
 
-const ConfirmButton = styled.button`
-  padding: 15px 30px;
-  width: fit-content;
-  align-self: end;
-  border-radius: 50px;
-  border: 0px;
-  background-color: ${colors.primary};
-  color: white;
-  font-size: 16px;
-`;
-
 const UploadButton = styled.label`
   text-align: center;
   padding: 5px 10px;
@@ -57,6 +47,7 @@ const UploadButton = styled.label`
   background-color: ${colors.primary};
   color: white;
   width: fit-content;
+  cursor: pointer;
 `;
 
 const InputUploadFile = styled.input`
@@ -127,9 +118,7 @@ export const NewPost: React.FC = () => {
           />
           Choisir une image
         </UploadButton>
-        <ConfirmButton name="confirm" type="submit">
-          Confirmer
-        </ConfirmButton>
+        <Button name="confirm" type="submit" label={"Confirmer"} style={{alignSelf:"end", width:"fit-content", padding:"15px 30px"}} />
       </FormContainer>
     </NewPostContainer>
   );

@@ -128,6 +128,7 @@ const LogoContainer = styled.button`
   border: 0;
   margin: 0;
   padding: 0;
+  cursor: pointer;
 `;
 
 const Logo = styled.img`
