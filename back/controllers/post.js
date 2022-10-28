@@ -1,4 +1,5 @@
-const { Query } = require("mongoose");
+const fs = require("fs");
+
 const Post = require("../models/Post");
 
 exports.newPost = (req, res, next) => {
@@ -35,18 +36,7 @@ exports.getAllPosts = (req, res, next) => {
 };
 
 exports.getOnePost = (req, res, next) => {
-  /*   Post.findOne({ _id: req.params.id })
-    .then((post) => {
-      Comment.find({ postId: post._id })
-        .then((comments) => {
-          Post.populate(comments)
-        })
-        .catch((error) => res.status(400).json({ error }));
-    })
-    .catch((error) => res.status(400).json({ error })); */
-
   Post.findOne({ _id: req.params.id })
-    /*     .populate("comments") */
     .then((post) => res.status(200).json(post))
     .catch((error) => res.status(400).json({ error }));
 };
@@ -54,10 +44,14 @@ exports.getOnePost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
   Post.findOne({ _id: req.params.id })
     .then((post) => {
-      if (req.auth.userId === post.userId) {
-        return Post.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: "Post deleted" }))
-          .catch((error) => res.status(400).json({ error }));
+      if (req.auth.userId === post.userId || req.auth.isAdmin) {
+        const filename = post.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${filename}`, (err) => {
+          if (err) throw err;
+          return Post.deleteOne({ _id: req.params.id })
+            .then(() => res.status(200).json({ message: "Post deleted" }))
+            .catch((error) => res.status(400).json({ error }));
+        });
       } else {
         return res.status(401).json({ message: "Not authorized" });
       }
@@ -80,14 +74,17 @@ exports.modifyPost = async (req, res, next) => {
   const post = new Post({
     ...postObject,
   });
-  if (req.auth.userId === post.userId) {
+  if (req.auth.userId === post.userId || req.auth.isAdmin) {
     if (req.body.deleteImage) {
       const post = await Post.findById(req.params.id);
-      post.imageUrl = undefined;
-      post
-        .save()
-        .then(next)
-        .catch((error) => res.status(400).json({ error }));
+      const filename = post.imageUrl.split("/images/")[1];
+      fs.unlink(`images/${filename}`, (err) => {
+        if (err) throw err;
+        post.imageUrl = undefined;
+        post
+          .save()
+          .catch((error) => res.status(400).json({ error }));
+      });
     }
     Post.updateOne(
       { _id: req.params.id },
@@ -96,7 +93,7 @@ exports.modifyPost = async (req, res, next) => {
       .then(() => res.status(200).json({ message: "Post updated" }))
       .catch((error) => res.status(400).json({ error }));
   } else {
-    res.status(401).json({ message: "Not authorize" });
+    res.status(401).json({ message: "Not authorized" });
   }
 };
 

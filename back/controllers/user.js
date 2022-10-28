@@ -7,7 +7,6 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 
 exports.signup = (req, res, next) => {
-  console.log(req.body);
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
@@ -40,6 +39,19 @@ exports.login = (req, res, next) => {
           if (!valid) {
             return res.status(401).json({ message: "Wrong email / password" });
           }
+          if (user.isAdmin) {
+            return res.status(200).json({
+              userId: user._id,
+              token: jwt.sign({ userId: user._id }, process.env.TOKEN_KEY, {
+                expiresIn: "24h",
+              }),
+              lastName: user.lastName,
+              firstName: user.firstName,
+              userImage: user.userImage,
+              email: user.email,
+              isAdmin: user.isAdmin,
+            });
+          }
           res.status(200).json({
             userId: user._id,
             token: jwt.sign({ userId: user._id }, process.env.TOKEN_KEY, {
@@ -61,7 +73,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.modifyProfile = (req, res, next) => {
-  console.log(req.file)
+  console.log(req.body)
   const userObject = req.file
     ? {
         ...req.body,
@@ -76,8 +88,7 @@ exports.modifyProfile = (req, res, next) => {
         .compare(req.body.confirmPassword, user.password)
         .then((valid) => {
           if (!valid) {
-            console.log("!valid")
-            return res.status(401).json({ message: "Not authorize" });
+            return res.status(401).json({ message: "Not authorized" });
           } else if (req.body.newPassword) {
             return bcrypt.hash(req.body.newPassword, 10).then((hash) => {
               User.updateOne(
@@ -90,13 +101,18 @@ exports.modifyProfile = (req, res, next) => {
                 .catch((error) => res.status(400).json({ error }));
             });
           }
-          console.log("valid")
+
           User.updateOne(
             { _id: req.auth.userId },
             { ...userObject, _id: req.auth.userId }
           )
             .then(() => {
-              console.log("update post")
+              if (req.file) {
+                const filename = user.userImage.split("/images/")[1];
+                fs.unlink(`images/${filename}`, (err) => {
+                  if (err) throw err;
+                });
+              }
               Post.updateMany(
                 { userId: req.auth.userId },
                 {
@@ -104,9 +120,7 @@ exports.modifyProfile = (req, res, next) => {
                   userLastName: req.body.lastName,
                   userImage: userObject.userImage,
                 }
-              )
-              .then(() => console.log(" Post updated with new user info "))
-              .catch((error) => console.error({error}))
+              ).catch((error) => console.error({ error }));
             })
             .then(() =>
               res
