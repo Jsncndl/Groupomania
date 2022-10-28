@@ -1,5 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { Alerts } from "../../components/Alerts/Alerts";
+import { NotificationModal } from "../hooks/modals/modals";
 
 const API_URL = "http://localhost:3000/api/";
 
@@ -12,6 +14,7 @@ const defaultValue = {
     userImage: "",
     firstName: "",
     lastName: "",
+    isAdmin: false,
   },
   isLoggedIn: false,
   login: (email: string, password: string) => {},
@@ -24,6 +27,7 @@ const defaultValue = {
   ) => {},
   modifyProfile: (newProfileValue: FormData) => {},
   isUserModified: false,
+  ProfileError401: false,
 };
 
 // Création du contexte
@@ -38,10 +42,12 @@ export const UserProvider = (props: any) => {
     userImage: "",
     firstName: "",
     lastName: "",
+    isAdmin: false,
   });
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
   const [isLocalstorageChecked, setIsLocalstorageChecked] = useState(false);
   const [isUserModified, setIsUserModified] = useState(false);
+  const [ProfileError401, setProfileError401] = useState(false);
 
   const checkLocalstorage = () => {
     const userStr = localStorage.getItem("user");
@@ -72,7 +78,7 @@ export const UserProvider = (props: any) => {
         .then((res) => {
           setUserDetails({ ...userDetails, ...res.data });
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     };
 
     if (userIsLoggedIn) {
@@ -100,8 +106,8 @@ export const UserProvider = (props: any) => {
       })
       .catch((error) => {
         error.response.status = 401
-          ? alert("Email ou mot de passe incorrect")
-          : { error };
+          ? setProfileError401(true)
+          : console.error(error);
       });
   };
 
@@ -113,6 +119,7 @@ export const UserProvider = (props: any) => {
       userImage: "",
       firstName: "",
       lastName: "",
+      isAdmin: false,
     });
     setUserIsLoggedIn(false);
   };
@@ -130,12 +137,11 @@ export const UserProvider = (props: any) => {
         email,
         password,
       })
-      .then((response) => alert(response.data.message))
-      .catch((error) => alert(error));
+      .then((response) => response.data.message)
+      .catch((error) => console.error(error));
   };
 
   const modifyProfile = async (newProfileValue: FormData) => {
-    console.log(newProfileValue.get("image"))
     await axios
       .put(API_URL + "user/" + userDetails.userId, newProfileValue, {
         headers: {
@@ -143,8 +149,15 @@ export const UserProvider = (props: any) => {
           Authorization: "Bearer " + userDetails.token,
         },
       })
-      .catch((error) => console.error(error));
-    setIsUserModified(true);
+      .then(() => {
+        setIsUserModified(true);
+        setProfileError401(false);
+      })
+      .catch((error) => {
+        error.response.status === 401
+          ? setProfileError401(true)
+          : console.error(error);
+      });
   };
 
   const contextValue = {
@@ -154,7 +167,8 @@ export const UserProvider = (props: any) => {
     logout: logoutHandler,
     signup: signupHandler,
     modifyProfile: modifyProfile,
-    isUserModified: isUserModified 
+    isUserModified: isUserModified,
+    ProfileError401: ProfileError401,
   };
 
   return (

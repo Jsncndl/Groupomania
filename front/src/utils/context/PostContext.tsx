@@ -1,6 +1,5 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { usePostContext } from "../hooks/usePostContext/usePostContext";
 import { useUserContext } from "../hooks/useUserContext/useUserContext";
 
 const API_URL = "http://localhost:3000/api/";
@@ -17,8 +16,9 @@ const defaultValue = {
       userFirstName: "",
       userLastName: "",
       userImage: "",
-      usersLiked: [],
+      usersLiked: [""],
       _id: "",
+      currentUserLiked: false,
     },
   ],
   currentPost: {
@@ -33,6 +33,7 @@ const defaultValue = {
     userImage: "",
     usersLiked: [],
     _id: "",
+    currentUserLiked: false,
   },
   newPost: (newPost: FormData) => {},
   getPost: (postId: string) => {},
@@ -58,6 +59,7 @@ export const PostContextProvider = (props: any) => {
       userImage: "",
       usersLiked: [],
       _id: "",
+      ...props,
     },
   ]);
   const [currentPost, setCurrentPost] = useState({
@@ -72,6 +74,7 @@ export const PostContextProvider = (props: any) => {
     userImage: "",
     usersLiked: [],
     _id: "",
+    ...props,
   });
 
   const [hasModif, setHasModif] = useState(false);
@@ -104,9 +107,8 @@ export const PostContextProvider = (props: any) => {
           Authorization: "Bearer " + user.userDetails.token,
         },
       })
-      .then((res) => alert(res.data.message))
-      .catch((error) => console.log(error));
-    setHasModif(true);
+      .then(() => setHasModif(true))
+      .catch((error) => console.error(error));
   };
 
   const getPost = async (postId: string) => {
@@ -132,9 +134,8 @@ export const PostContextProvider = (props: any) => {
           Authorization: "Bearer " + user.userDetails.token,
         },
       })
-      .then((res) => alert(res.data.message))
+      .then(() => setHasModif(true))
       .catch((error) => console.error(error));
-    setHasModif(true);
   };
 
   // Attention suppression d'image ne s'enregistre pas lors de la confirmation
@@ -146,10 +147,11 @@ export const PostContextProvider = (props: any) => {
           Authorization: "Bearer " + user.userDetails.token,
         },
       })
-      .then((res) => console.log(res.data))
+      .then(() => {
+        setHasModif(true);
+        window.location.reload();
+      })
       .catch((error) => console.error(error));
-    setHasModif(true);
-    window.location.reload();
   };
 
   const likePost = async (postId: string) => {
@@ -157,9 +159,8 @@ export const PostContextProvider = (props: any) => {
       "Bearer " + user.userDetails.token;
     await axios
       .put(API_URL + "post/like/" + postId, { like: 1 })
-      .then((res) => console.log(res))
+      .then(() => setHasModif(true))
       .catch((error) => console.error(error));
-    setHasModif(true);
   };
 
   const contextValue = {
