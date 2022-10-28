@@ -1,83 +1,53 @@
 import { useState } from "react";
-import styled from "styled-components";
 import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
 import colors from "../../utils/style/colors";
 import { Button } from "../Button/Button";
-
-const NewPostContainer = styled.div`
-  width: 60%;
-  margin: 25px auto;
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0px 0px 4px ${colors.tertiary};
-`;
-
-const FormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  padding: 15px 3%;
-  margin: auto;
-`;
-
-const LabelContainer = styled.label`
-  padding: 0px 10px 5px;
-`;
-
-const InputContainer = styled.input`
-  width: 80%;
-  margin: 0px 0px 10px;
-  padding: 5px;
-`;
-
-const TextareaContainer = styled.textarea`
-  padding: 5px;
-  min-width: 75%;
-  max-width: 100%;
-  min-height: 40%;
-  max-height: 300px;
-  font-family: Lato, sans-serif;
-  margin: 0px 0px 10px;
-`;
-
-const UploadButton = styled.label`
-  text-align: center;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: ${colors.primary};
-  color: white;
-  width: fit-content;
-  cursor: pointer;
-`;
-
-const InputUploadFile = styled.input`
-  display: none;
-`;
-
-/////////////////////////////////////////CSS////////////////////////////////////////////
+import { Alerts } from "../Alerts/Alerts";
+import { NotificationModal } from "../../utils/hooks/modals/modals";
+import {
+  Form,
+  FormContainer,
+  Input,
+  InputUploadFile,
+  Label,
+  TextArea,
+  UploadButton,
+} from "../../utils/style/FormStyledComponents";
 
 export const NewPost: React.FC = () => {
   const UserCtx = useUserContext();
   const PostCtx = usePostContext();
+
   const [formValue, setFormValue] = useState({
     title: "",
     message: "",
   });
+  const [uploadFile, setUploadFile] = useState();
+  const [uploadNotif, setUploadNotif] = useState(false);
+  const [newPostNotif, setNewPostNotif] = useState(false);
+  const [error, setError] = useState(false);
 
   const postFormData = new FormData();
 
   const handleChange = (event: any) => {
+    setError(false);
     setFormValue({ ...formValue, [event.target.name]: event.target.value });
   };
 
   const onFileUpload = (event: any) => {
     const file = event.target.files[0];
-    postFormData.set("image", file);
+    setUploadFile(file);
+    setUploadNotif(true);
+    setTimeout(() => setUploadNotif(false), 6000);
   };
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    if (formValue) {
+    if (formValue.title && formValue.message !== "") {
+      if (uploadFile) {
+        postFormData.append("image", uploadFile);
+      }
       postFormData.append("userId", UserCtx.userDetails.userId);
       postFormData.append("userLastName", UserCtx.userDetails.lastName);
       postFormData.append("userFirstName", UserCtx.userDetails.firstName);
@@ -85,30 +55,57 @@ export const NewPost: React.FC = () => {
       postFormData.append("title", formValue.title);
       postFormData.append("message", formValue.message);
       PostCtx.newPost(postFormData);
+
+      setFormValue({ title: "", message: "" });
+      setNewPostNotif(true);
+      setTimeout(() => setNewPostNotif(false), 6000);
+    } else {
+      setError(true);
     }
-    setFormValue({title: "", message: ""})
   };
 
   return (
-    <NewPostContainer>
-      <FormContainer id="NewPostForm" onSubmit={handleSubmit}>
-        <LabelContainer htmlFor="title">Titre du post:</LabelContainer>
-        <InputContainer
-          id="title"
-          onChange={handleChange}
-          value={formValue.title}
-          name="title"
-          type="text"
-          placeholder="Titre ..."
-        />
-        <LabelContainer htmlFor="message">Message:</LabelContainer>
-        <TextareaContainer
-          onChange={handleChange}
-          value={formValue.message}
-          name="message"
-          placeholder="Votre message ..."
-        />
-        <LabelContainer htmlFor="file">Ajouter une image:</LabelContainer>
+    <FormContainer>
+      <Form id="NewPostForm" onSubmit={handleSubmit}>
+        <Label htmlFor="title">Titre:</Label>
+        {error ? (
+          <Input
+            id="title"
+            onChange={handleChange}
+            value={formValue.title}
+            name="title"
+            type="text"
+            placeholder="Titre ..."
+            color={colors.primary}
+          />
+        ) : (
+          <Input
+            id="title"
+            onChange={handleChange}
+            value={formValue.title}
+            name="title"
+            type="text"
+            placeholder="Titre ..."
+          />
+        )}
+        <Label htmlFor="message">Message:</Label>
+        {error ? (
+          <TextArea
+            onChange={handleChange}
+            value={formValue.message}
+            name="message"
+            placeholder="Votre message ..."
+            color={colors.primary}
+          />
+        ) : (
+          <TextArea
+            onChange={handleChange}
+            value={formValue.message}
+            name="message"
+            placeholder="Votre message ..."
+          />
+        )}
+        <Label htmlFor="file">Ajouter une image:</Label>
         <UploadButton>
           <InputUploadFile
             type="file"
@@ -118,8 +115,35 @@ export const NewPost: React.FC = () => {
           />
           Choisir une image
         </UploadButton>
-        <Button name="confirm" type="submit" label={"Confirmer"} style={{alignSelf:"end", width:"fit-content", padding:"15px 30px"}} />
-      </FormContainer>
-    </NewPostContainer>
+        <Button
+          name="confirm"
+          type="submit"
+          label={"Confirmer"}
+          style={{
+            alignSelf: "end",
+            width: "fit-content",
+            padding: "15px 30px",
+          }}
+        />
+      </Form>
+      {uploadNotif ? (
+        <NotificationModal>
+          <Alerts message={"Votre image à été ajouté"} name={"success"} />
+        </NotificationModal>
+      ) : null}
+      {newPostNotif ? (
+        <NotificationModal>
+          <Alerts message={"Votre publication a été créée"} name={"success"} />
+        </NotificationModal>
+      ) : null}
+      {error ? (
+        <NotificationModal>
+          <Alerts
+            message={`Veuillez remplir les champs du formulaire`}
+            name={"warning"}
+          />
+        </NotificationModal>
+      ) : null}
+    </FormContainer>
   );
 };

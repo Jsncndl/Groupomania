@@ -6,10 +6,16 @@ import styled from "styled-components";
 import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
 import colors from "../../utils/style/colors";
-import { Button } from "../Button/Button";
 import logoDelete from "../../assets/delete.svg";
 import logoEdit from "../../assets/edit.svg";
-import logoLike from "../../assets/like.svg"
+import logoOnLike from "../../assets/likeOn.svg";
+import logoOffLike from "../../assets/likeOff.svg";
+import { NotificationModal } from "../../utils/hooks/modals/modals";
+import { Confirmation } from "../Confirmation/Confirmation";
+import { useEffect, useState } from "react";
+import { Alerts } from "../Alerts/Alerts";
+import { ImageModal } from "../ImageModal/ImageModal";
+import { mediaQueries } from "../../utils/style/mediaQueries";
 
 dayjs.extend(relativeTime);
 
@@ -26,12 +32,13 @@ interface PostProps {
   userImage: string;
   likes: number;
   usersLiked?: [string];
+  currentUserLiked?: boolean;
 }
 
 const PostMainContainer = styled.div`
   background-color: white;
   border-radius: 15px;
-  margin: 0 0 25px 0;
+  margin: 0 0 15px 0;
   box-shadow: 0px 0px 4px ${colors.tertiary};
 `;
 
@@ -52,6 +59,7 @@ const ProfileImageWrapper = styled.div`
   justify-content: center;
   height: 50px;
   width: 50px;
+  min-width: 50px;
   overflow: hidden;
   border-radius: 100%;
 `;
@@ -72,6 +80,7 @@ const PostImageWrapper = styled.div`
 const PostImage = styled.img`
   max-width: 100%;
   max-height: 100%;
+  cursor: pointer;
 `;
 
 const PostDetailsWrapper = styled.div`
@@ -98,12 +107,20 @@ const ProfileNameWrapper = styled.div`
 `;
 
 const PostMessageContainer = styled.div`
-  padding: 0 0 10px 50px;
+  padding: 0 25px 10px 25px;
+
+  @media (min-width: ${mediaQueries.medium}) {
+    padding: 0 50px 10px 50px;
+  }
 `;
 
 const PostTitleContainer = styled.h2`
-  padding: 0 0 10px 30px;
+  padding : 0 25px 0 25px;
   margin: 20px 0;
+
+  @media (min-width: ${mediaQueries.medium}) {
+    padding: 0 30px 10px 30px;
+  }
 `;
 
 const ProfileButtonContainer = styled.div`
@@ -131,9 +148,21 @@ const LogoContainer = styled.button`
   cursor: pointer;
 `;
 
+const LogoOnLike = styled.img`
+  color: blue;
+  transition: transform 400ms ease;
+  &:hover,
+  &:active {
+    transform: rotate(-360deg) scale(130%);
+  }
+`;
+
 const Logo = styled.img`
-  width: 100%;
-  opacity: 70%;
+  transition: transform 400ms ease;
+  &:hover,
+  &:active {
+    transform: scale(130%);
+  }
 `;
 
 export const PostWrapper = ({
@@ -149,20 +178,44 @@ export const PostWrapper = ({
   userImage,
   likes,
   usersLiked,
-  ...props
+  currentUserLiked,
 }: PostProps) => {
   const currentUser = useUserContext().userDetails;
   const PostsCtx = usePostContext();
 
+  const [wantDelete, setWantDelete] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const [like, setLike] = useState(false);
+  const [unLike, setUnlike] = useState(false);
+  const [fullImage, setFullImage] = useState("");
+  const [exitFullImage, setExitFullImage] = useState(false);
+
   const handleDeleteButton = (event: any) => {
     event.preventDefault();
-    console.log(event.target.parentElement)
-    PostsCtx.deletePost(event.target.parentElement.getAttribute("data-id"));
+    setWantDelete(true);
+    setDeleteId(event.target.parentElement.getAttribute("data-id"));
+  };
+
+  const deletePost = () => {
+    PostsCtx.deletePost(deleteId);
+    setConfirmDelete(true);
+    setTimeout(() => {
+      setConfirmDelete(false);
+    }, 6000);
   };
 
   const handleLike = (event: any) => {
     event.preventDefault();
-    PostsCtx.likePost(event.target.parentElement.getAttribute("data-id"));
+    const name = event.target.getAttribute("data-name");
+    if (name !== "like") {
+      setLike(true);
+      setUnlike(false);
+    } else {
+      setUnlike(true);
+      setLike(false);
+    }
+    PostsCtx.likePost(_id);
   };
 
   return (
@@ -176,11 +229,11 @@ export const PostWrapper = ({
             />
           </ProfileImageWrapper>
           <ProfileNameWrapper>
-            {userFirstName} {userLastName},{" "}
+            {userFirstName} {userLastName}{" "}
             <PostDate>{dayjs(date).locale(locale).fromNow()}</PostDate>
           </ProfileNameWrapper>
         </ProfileMainContainer>
-        {userId === currentUser.userId ? (
+        {userId === currentUser.userId || currentUser.isAdmin ? (
           <ProfileButtonContainer data-id={_id}>
             <Link to={`/post=${_id}`}>
               <LogoContainer>
@@ -198,7 +251,11 @@ export const PostWrapper = ({
         <PostMessageContainer>{message}</PostMessageContainer>
         {imageUrl ? (
           <PostImageWrapper>
-            <PostImage src={imageUrl} alt={`Publication de ${userFirstName}`} />
+            <PostImage
+              src={imageUrl}
+              alt={`Publication de ${userFirstName}`}
+              onClick={() => setFullImage(imageUrl)}
+            />
           </PostImageWrapper>
         ) : null}
         <PostDetailsWrapper data-id={_id}>
@@ -208,10 +265,60 @@ export const PostWrapper = ({
             <span>{likes} personne aime cette publication.</span>
           )}
           <LogoContainer data-id={_id} onClick={handleLike}>
-            <Logo src={logoLike} />
+            {currentUserLiked ? (
+              <LogoOnLike src={logoOnLike} data-name="like" />
+            ) : (
+              <Logo src={logoOffLike} data-name="unlike" />
+            )}
           </LogoContainer>
         </PostDetailsWrapper>
       </div>
+      {wantDelete ? (
+        <NotificationModal>
+          <Confirmation
+            title={"Supprimer la publication ?"}
+            message={"Vous allez supprimer définitivement votre publication."}
+            buttonLabel={"Supprimer"}
+            buttonYesOnClick={() => {
+              deletePost();
+              setWantDelete(false);
+            }}
+            buttonNoOnClick={() => setWantDelete(false)}
+          />
+        </NotificationModal>
+      ) : null}
+      {confirmDelete ? (
+        <NotificationModal>
+          <Alerts message={"Publication supprimée"} name={"success"} />
+        </NotificationModal>
+      ) : null}
+      {like ? (
+        <NotificationModal>
+          <Alerts message={"Vous avez aimez la publication"} name={"success"} />
+        </NotificationModal>
+      ) : null}
+      {unLike ? (
+        <NotificationModal>
+          <Alerts
+            message={"Vous n'aimez plus la publication"}
+            name={"success"}
+          />
+        </NotificationModal>
+      ) : null}
+      {fullImage === imageUrl && !exitFullImage ? (
+        <NotificationModal>
+          <ImageModal
+            src={fullImage}
+            exitButton={() => {
+              setExitFullImage(true);
+              setFullImage("");
+              setTimeout(() => {
+                setExitFullImage(false);
+              }, 500);
+            }}
+          />
+        </NotificationModal>
+      ) : null}
     </PostMainContainer>
   );
 };

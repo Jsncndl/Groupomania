@@ -1,47 +1,88 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
-import logoLogout from "../../assets/logout.svg"
+import logoLogout from "../../assets/logout.svg";
+import { NotificationModal } from "../../utils/hooks/modals/modals";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
+import colors from "../../utils/style/colors";
+import { mediaQueries } from "../../utils/style/mediaQueries";
+import { Confirmation } from "../Confirmation/Confirmation";
 
 const HeaderContainer = styled.header`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  height: 60px;
+  height: 120px;
+  margin: 0 0 50px;
+  padding: 0 0 5px 0;
+  box-shadow: 0 19px 8px 2px ${colors.tertiary};
+
+  @media (min-width: ${mediaQueries.medium}) {
+    flex-direction: row;
+    justify-content: center;
+    height: 70px;
+    margin: 0;
+    box-shadow: 0 0 0;
+  }
+`;
+
+const StyledLink = styled(Link)`
   width: 100%;
+  min-height: 75px;
   overflow: hidden;
-  background-color: white;
+  background: white;
+  display: flex;
+  align-items: center;
+
+  @media (min-width: ${mediaQueries.medium}) {
+    min-height: 70px;
+    height: 70px;
+  }
+`;
+
+const LogoContainer = styled.img`
+  width: 95%;
+  max-height: 288px;
+
+  @media (min-width: ${mediaQueries.medium}) {
+    width: 60%;
+  }
 `;
 
 const NavContainer = styled.nav`
   display: flex;
   align-items: center;
-  width: fit-content;
-  gap: 30px;
-  justify-content: space-around;
-  margin: 0 30px;
-`;
+  justify-content: center;
+  width: 100%;
+  background: white;
+  gap: 30%;
+  min-height: 70px;
 
-const LogoContainer = styled.img`
-  min-height: 175px;
-  min-width: 200px;
+  @media (min-width: ${mediaQueries.medium}) {
+    min-height: 60px;
+    gap: 10%;
+    justify-content: flex-end;
+    padding: 5px 20px; 5px 5px ;
+  }
+  `;
+
+const HelloContainer = styled.div`
+  display: none;
+  @media (min-width: ${mediaQueries.large}) {
+    display: block;
+  }
 `;
 
 const ProfileImageWrapper = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50px;
-  min-height: 50px;
-  max-height: 50px;
-  height: 50px;
-  min-width: 50px;
-  max-width: 50px;
+  min-width: 60px;
+  max-width: 60px;
+  height: 60px;
   overflow: hidden;
   border-radius: 100%;
-  background-color: blue;
 `;
 
 const ProfileImageContainer = styled.img`
@@ -49,8 +90,8 @@ const ProfileImageContainer = styled.img`
 `;
 
 const LogoLogoutContainer = styled.button`
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,8 +100,9 @@ const LogoLogoutContainer = styled.button`
   margin: 0;
   padding: 0;
   cursor: pointer;
-  transition: transform 500ms ease;
-  &:hover{
+  transition: transform 200ms ease;
+  &:hover,
+  &:active {
     transform: scale(105%);
   }
 `;
@@ -72,19 +114,19 @@ const LogoLogout = styled.img`
 
 export const MainHeader = () => {
   const UserCtx = useUserContext();
+  const [wantLogout, setWantLogout] = useState(false);
 
   const handleLogout = () => {
-    localStorage.clear();
-    UserCtx.logout();
+    setWantLogout(true);
   };
 
   return (
     <HeaderContainer>
-      <Link className="logo--container" to="/">
-        <LogoContainer className="logo--img" src={logo} alt="Logo" />
-      </Link>
+      <StyledLink to="/">
+        <LogoContainer src={logo} alt="Logo" />
+      </StyledLink>
       <NavContainer>
-        <div>Hello {UserCtx.userDetails.firstName} !</div>
+        <HelloContainer>Hello {UserCtx.userDetails.firstName} !</HelloContainer>
         <ProfileImageWrapper to={"../user/" + UserCtx.userDetails.userId}>
           <ProfileImageContainer
             src={UserCtx.userDetails.userImage}
@@ -95,6 +137,20 @@ export const MainHeader = () => {
           <LogoLogout src={logoLogout} />
         </LogoLogoutContainer>
       </NavContainer>
+      {wantLogout ? (
+        <NotificationModal>
+          <Confirmation
+            title={"Déconnexion"}
+            message={"Vous allez vous déconnecter"}
+            buttonLabel={"Déconnexion"}
+            buttonNoOnClick={() => setWantLogout(false)}
+            buttonYesOnClick={() => {
+              localStorage.clear();
+              UserCtx.logout();
+            }}
+          />
+        </NotificationModal>
+      ) : null}
     </HeaderContainer>
   );
 };

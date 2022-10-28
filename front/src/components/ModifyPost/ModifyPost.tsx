@@ -1,67 +1,41 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { NotificationModal } from "../../utils/hooks/modals/modals";
 import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
 import colors from "../../utils/style/colors";
+import {
+  Form,
+  FormContainer,
+  Input,
+  InputUploadFile,
+  Label,
+  TextArea,
+  UploadButton,
+} from "../../utils/style/FormStyledComponents";
+import { Alerts } from "../Alerts/Alerts";
+import { Button } from "../Button/Button";
 import { MainHeader } from "../MainHeader/MainHeader";
 
-const NewPostContainer = styled.div`
-  width: 60%;
-  margin: 25px auto;
-  background-color: white;
-  border-radius: 15px;
-`;
-
-const FormContainer = styled.form`
+const PostImageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 15px 3%;
-  margin: auto;
+  gap: 15px;
+
 `;
 
-const LabelContainer = styled.label`
-  padding: 0px 10px 5px;
+const ImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: center;
+  
 `;
 
-const InputContainer = styled.input`
-  width: 80%;
-  margin: 0px 0px 10px;
-  padding: 5px;
-`;
-
-const TextareaContainer = styled.textarea`
-  padding: 5px;
-  min-width: 75%;
-  max-width: 100%;
-  min-height: 40%;
+const Image = styled.img`
   max-height: 300px;
-  font-family: Lato, sans-serif;
-  margin: 0px 0px 10px;
-`;
-
-const ConfirmButton = styled.button`
-  padding: 15px 30px;
-  width: fit-content;
-  align-self: end;
-  border-radius: 50px;
-  border: 0px;
-  background-color: ${colors.primary};
-  color: white;
-  font-size: 16px;
-`;
-
-const UploadButton = styled.label`
-  text-align: center;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: ${colors.primary};
-  color: white;
-  width: fit-content;
-`;
-
-const InputUploadFile = styled.input`
-  display: none;
+  align-self: center;
 `;
 
 /////////////////////////////////////////CSS////////////////////////////////////////////
@@ -79,6 +53,12 @@ export const ModifyPost: React.FC = () => {
     title: "",
     message: "",
   });
+  const [uploadFile, setUploadFile] = useState();
+  const [uploadNotif, setUploadNotif] = useState(false);
+  const [deleteNotif, setDeleteNotif] = useState(false);
+  const [titleError, setTitleError] = useState(false);
+  const [messageError, setMessageError] = useState(false);
+  const [wantDeleteImage, setWantDeleteImage] = useState("");
 
   let count = 0;
 
@@ -100,61 +80,105 @@ export const ModifyPost: React.FC = () => {
   const postFormData = new FormData();
 
   const handleChange = (event: any) => {
+    setTitleError(false);
+    setMessageError(false);
     setFormValue({ ...formValue, [event.target.name]: event.target.value });
   };
 
   const onFileUpload = (event: any) => {
     const file = event.target.files[0];
-    postFormData.set("image", file);
-    alert("Votre image à été remplacé");
+    setUploadFile(file);
+    setUploadNotif(true);
+    setTimeout(() => setUploadNotif(false), 6000);
   };
 
   const deleteFileUpload = (event: any) => {
     event.preventDefault();
-    const currentImageUrl = PostCtx.currentPost.imageUrl
-    postFormData.set("deleteImage", currentImageUrl)
+    setWantDeleteImage(PostCtx.currentPost.imageUrl)
+    setDeleteNotif(true);
+    setTimeout(() => setDeleteNotif(false), 6000);
   };
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    console.log(postFormData.get("image"))
-    if (formValue) {
+    if (formValue.title && formValue.message !== "") {
+      if (uploadFile) {
+        postFormData.append("image", uploadFile);
+      }
+      if(wantDeleteImage) {
+        postFormData.set("deleteImage", wantDeleteImage);
+      }
       postFormData.append("userId", UserCtx.userDetails.userId);
       postFormData.append("title", formValue.title);
       postFormData.append("message", formValue.message);
       PostCtx.modifyPost(postFormData, PostCtx.currentPost._id);
+    } else if (formValue.title === "") {
+      setTitleError(true);
+    } else if (formValue.message === "") {
+      setMessageError(true);
     }
   };
 
   return (
     <main>
       <MainHeader />
-      <NewPostContainer>
-        <FormContainer onSubmit={handleSubmit}>
-          <LabelContainer htmlFor="title">Titre du post:</LabelContainer>
-          <InputContainer
-            onChange={handleChange}
-            value={formValue.title}
-            name="title"
-            type="text"
-            placeholder="Titre ..."
-          />
-          <LabelContainer htmlFor="message">Message:</LabelContainer>
-          <TextareaContainer
-            onChange={handleChange}
-            value={formValue.message}
-            name="message"
-            placeholder="Votre message ..."
-          />
-          <div id="postImageContainer">
-          {PostCtx.currentPost.imageUrl ? (
-            <div>
-              <span>Image du post</span>
-              <img src={PostCtx.currentPost.imageUrl} alt="Img du post" />
-            </div>) : (null)}
-            <LabelContainer htmlFor="file">
-              {PostCtx.currentPost.imageUrl ? "Remplacer" : "Ajouter"} l'image:
-            </LabelContainer>
+      <FormContainer>
+        <Form onSubmit={handleSubmit}>
+          <Label htmlFor="title">Titre:</Label>
+          {titleError ? (
+            <Input
+              onChange={handleChange}
+              value={formValue.title}
+              name="title"
+              type="text"
+              placeholder="Titre ..."
+              color={colors.primary}
+            />
+          ) : (
+            <Input
+              onChange={handleChange}
+              value={formValue.title}
+              name="title"
+              type="text"
+              placeholder="Titre ..."
+            />
+          )}
+          <Label htmlFor="message">Message:</Label>
+          {messageError ? (
+            <TextArea
+              onChange={handleChange}
+              value={formValue.message}
+              name="message"
+              placeholder="Votre message ..."
+              color={colors.primary}
+            />
+          ) : (
+            <TextArea
+              onChange={handleChange}
+              value={formValue.message}
+              name="message"
+              placeholder="Votre message ..."
+            />
+          )}
+          <PostImageContainer id="postImageContainer">
+            {PostCtx.currentPost.imageUrl ? (
+              <div>
+                <ImageContainer>
+                  <Image src={PostCtx.currentPost.imageUrl} alt="Img du post" />
+                </ImageContainer>
+                <Button
+                  onClick={deleteFileUpload}
+                  name={"confirm"}
+                  type={"button"}
+                  label={"Supprimer l'image"}
+                  style={{
+                    margin: "10px 0 0 0",
+                    width: "fit-content",
+                    padding: "10px",
+                  }}
+                />
+              </div>
+            ) : null}
             <UploadButton>
               <InputUploadFile
                 type="file"
@@ -162,17 +186,43 @@ export const ModifyPost: React.FC = () => {
                 accept="image/png, image/jpeg, image/jpg"
                 onChange={onFileUpload}
               />
-              {PostCtx.currentPost.imageUrl ? "Remplacer" : "Ajouter"} l'image
+              {PostCtx.currentPost.imageUrl
+                ? "Remplacer l'image"
+                : "Ajouter une image"}
             </UploadButton>
-            <ConfirmButton onClick={deleteFileUpload}>
-              Supprimer l'image
-            </ConfirmButton>
-            <ConfirmButton name="confirm" type="submit">
-              Confirmer
-            </ConfirmButton>
-          </div>
-        </FormContainer>
-      </NewPostContainer>
+          </PostImageContainer>
+          <Button
+            name="confirm"
+            type="submit"
+            label={"Confirmer"}
+            style={{
+              alignSelf: "end",
+              width: "fit-content",
+              padding: "15px 30px",
+            }}
+          />
+        </Form>
+      </FormContainer>
+      {titleError ? (
+        <NotificationModal>
+          <Alerts message={"Le titre doit être renseigné"} name={"warning"} />
+        </NotificationModal>
+      ) : null}
+      {messageError ? (
+        <NotificationModal>
+          <Alerts message={"Le message est nécéssaire"} name={"warning"} />
+        </NotificationModal>
+      ) : null}
+      {uploadNotif ? (
+        <NotificationModal>
+          <Alerts message={"Votre image à été remplacée"} name={"success"} />
+        </NotificationModal>
+      ) : null}
+      {deleteNotif ? (
+        <NotificationModal>
+          <Alerts message={"Votre image à été supprimée"} name={"success"} />
+        </NotificationModal>
+      ) : null}
     </main>
   );
 };

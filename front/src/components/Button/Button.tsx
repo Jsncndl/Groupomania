@@ -2,36 +2,28 @@ import { HTMLAttributes } from "react";
 import styled from "styled-components";
 import colors from "../../utils/style/colors";
 
-import "./button.css";
-
-const ButtonLogin = styled.button`
-  padding: 20px 70px;
+const ButtonLogin = styled.button<{ fontColor?: string }>`
+  width: 50%;
+  padding: 15px;
+  border-radius: 20px 0 0;
   border: 0;
-  border-radius: 20px 0 0 0;
-  font-weight: bold;
+  background: white;
   font-size: 20px;
-  margin: 0;
-  box-shadow: inset 1px 1px 2px ${colors.secondary};
-  background-color: white;
   cursor: pointer;
-  &:active {
-    color: ${colors.primary};
-  }
+  color: ${({ fontColor }) => fontColor};
+  border-top: ${({ fontColor }) => `solid 2px ${fontColor}`};
 `;
 
-const ButtonSignup = styled.button`
-  padding: 20px 70px;
+const ButtonSignup = styled.button<{ fontColor?: string }>`
+  width: 50%;
+  padding: 15px;
   border: 0;
   border-radius: 0 20px 0 0;
-  font-weight: bold;
   font-size: 20px;
-  margin: 0;
-  box-shadow: inset -1px 1px 2px ${colors.secondary};
-  background-color: white;
+  background: white;
+  color: ${({ fontColor }) => fontColor};
+  border-top: ${({ fontColor }) => `solid 2px ${fontColor}`};
   cursor: pointer;
-  &:active {
-    color: ${colors.primary};
-  }
 `;
 
 const ButtonConfirm = styled.button`
@@ -55,6 +47,7 @@ interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   type: "button" | "submit" | "reset" | undefined;
   label: string;
   value?: string;
+  fontColor?: string;
 }
 
 export const Button = ({ name, label, ...props }: ButtonProps) => {
