@@ -282,16 +282,3 @@ The app should open on http://localhost:3001/.
 | `200: Created`|`{ "message": "Post deleted" }`|
 |`400: Bad request` |`{"error": {...} }`|
 |`401: Unauthorized`|`{"error": "Not Authrorized"`|
-
-
-
-
-
-
-
-## Acknowledgements
-
- - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
-
