@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import styled from "styled-components";
 import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
@@ -19,16 +18,19 @@ const MainContainer = styled.div`
 export const Posts: React.FC = () => {
   const PostsCtx = usePostContext();
   const currentUser = useUserContext().userDetails;
+/*
+  console.log(PostsCtx.posts);
 
-  PostsCtx.posts.sort((a, b) => {
-    if(a.usersLiked?.includes(currentUser.userId)){
-      a.currentUserLiked = true
-    }
+     PostsCtx.posts?.sort((a, b) => {
+
     return dayjs(b.date).unix() - dayjs(a.date).unix();
-  });
+  }); */
   return (
     <>
-      {PostsCtx.posts.map((post, index) => {
+      {PostsCtx.posts?.map((post, index) => {
+        if (post.usersLiked?.includes(currentUser.userId)) {
+          post.currentUserLiked = true;
+        }
         return (
           <MainContainer key={index}>
             <PostWrapper

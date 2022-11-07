@@ -4,7 +4,6 @@ import { createPortal } from "react-dom";
 const NotificationModalRoot = document.querySelector(
   "#modal-root"
 ) as HTMLElement;
-console.log(NotificationModalRoot);
 
 type ModalProps = {
   children: ReactNode;
@@ -15,7 +14,6 @@ export function NotificationModal({ children }: ModalProps) {
   const elRef = useRef<HTMLDivElement | null>(null);
   if (!elRef.current) elRef.current = document.createElement("div");
 
-  console.log(elRef.current!);
   useEffect(() => {
     const el = elRef.current!; // non-null assertion because it will never be null
     console.log(el);

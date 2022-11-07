@@ -1,8 +1,7 @@
-import { setDefaultResultOrder } from "dns";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import { NotificationModal } from "../../utils/hooks/modals/modals";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
+import { validateName } from "../../utils/regexp/regexp";
 import colors from "../../utils/style/colors";
 import {
   Form,
@@ -14,35 +13,6 @@ import {
 import { Alerts } from "../Alerts/Alerts";
 import { Button } from "../Button/Button";
 
-/* const FormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const LabelContainer = styled.label`
-  padding: 5px 5px;
-`;
-
-const InputContainer = styled.input`
-  border-radius: 10px;
-  border-width: 1px;
-  border-color: ${colors.tertiary}
-  `;
-
-  const UploadButton = styled.label`
-  text-align: center;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: ${colors.primary};
-  color: white;
-  width: fit-content;
-  cursor: pointer;
-`;
-
-const InputUploadFile = styled.input`
-  display: none;
-`; */
-
 export const ModifyProfile = () => {
   const [formValue, setFormValue] = useState({
     firstName: "",
@@ -52,55 +22,77 @@ export const ModifyProfile = () => {
   });
 
   const [uploadFile, setUploadFile] = useState();
-  const [wantUploadFile, setWantUploadFile] = useState(false);
+  const [confirmUploadFile, setConfirmUploadFile] = useState(false);
   const [confirmModify, setConfirmModify] = useState(false);
   const [wantEditPassword, setWantEditPassword] = useState(false);
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const user = useUserContext();
 
+  // Initialize form default value with first and last name in context //
   useEffect(() => {
     setFormValue({
       ...formValue,
       firstName: user.userDetails.firstName,
       lastName: user.userDetails.lastName,
     });
-  }, [user.userDetails.firstName, user.userDetails.lastName]);
+  }, [user.userDetails.firstName, user.userDetails.lastName, user.error]);
+
   const userFormData = new FormData();
 
+  // Function when user add file, add file to the FormData //
   const onFileUpload = (event: any) => {
     setUploadFile(event.target.files[0]);
-    setWantUploadFile(true);
+    setConfirmUploadFile(true);
     setTimeout(() => {
-      setWantUploadFile(false);
+      setConfirmUploadFile(false);
     }, 6000);
   };
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
+    // For formValue: firstName, lastName, password
+    // Check if field isn't empty
+    // or same has initial value to add it to FormData
+    // If field is empty, return error in the following state
+
+    if (formValue.firstName !== ("" || user.userDetails.firstName)) {
+      userFormData.append("firstName", formValue.firstName);
+    } else if (formValue.firstName === "") {
+      return setFirstNameError(true);
+    }
+
+    if (formValue.lastName !== ("" || user.userDetails.lastName)) {
+      userFormData.append("lastName", formValue.lastName);
+    } else if (formValue.lastName === "") {
+      setLastNameError(true);
+    }
+
+    if (formValue.password !== "") {
+      userFormData.append("confirmPassword", formValue.password);
+    } else {
+      setPasswordError(true);
+    }
+
     if (uploadFile) {
       userFormData.append("image", uploadFile);
     }
     if (formValue.newPassword) {
       userFormData.append("newPassword", formValue.newPassword);
     }
-    if (formValue.firstName !== user.userDetails.firstName) {
-      userFormData.append("firstName", formValue.firstName);
-    }
-    if (formValue.lastName !== user.userDetails.firstName) {
-      userFormData.append("lastName", formValue.lastName);
-    }
-    if (formValue.password) {
-      userFormData.append("confirmPassword", formValue.password);
-    } else {
-      user.ProfileError401 = true;
-    }
-    if (
-      userFormData.get("firstName") ||
-      userFormData.get("lastName") ||
-      userFormData.get("newPassword")
-    ) {
+
+    // Check if userFormData and value of password isn't empty
+    // to send request with userFormData
+    if (userFormData !== null && formValue.password !== "") {
+      if (formValue.firstName === "" || !validateName(formValue.firstName)) {
+        return setFirstNameError(true);
+      }
+      if (formValue.lastName === "" || !validateName(formValue.lastName)) {
+        return setLastNameError(true);
+      }
       user.modifyProfile(userFormData);
-      user.ProfileError401 = false;
       setConfirmModify(true);
       setTimeout(() => {
         setConfirmModify(false);
@@ -109,6 +101,9 @@ export const ModifyProfile = () => {
   };
 
   const handleChange = (event: any) => {
+    setLastNameError(false);
+    setFirstNameError(false);
+    setPasswordError(false);
     setFormValue({ ...formValue, [event.target.name]: event.target.value });
   };
 
@@ -145,21 +140,41 @@ export const ModifyProfile = () => {
         Choisir une image
       </UploadButton>
       <Label htmlFor="firstName">Prénom</Label>
-      <Input
-        id="firstName"
-        name="firstName"
-        value={formValue.firstName}
-        onChange={handleChange}
-      />
+      {firstNameError ? (
+        <Input
+          id="firstName"
+          name="firstName"
+          value={formValue.firstName}
+          onChange={handleChange}
+          color={colors.primary}
+        />
+      ) : (
+        <Input
+          id="firstName"
+          name="firstName"
+          value={formValue.firstName}
+          onChange={handleChange}
+        />
+      )}
       <Label htmlFor="lastName">Nom</Label>
-      <Input
-        id="lastName"
-        name="lastName"
-        value={formValue.lastName}
-        onChange={handleChange}
-      />
+      {lastNameError ? (
+        <Input
+          id="lastName"
+          name="lastName"
+          value={formValue.lastName}
+          onChange={handleChange}
+          color={colors.primary}
+        />
+      ) : (
+        <Input
+          id="lastName"
+          name="lastName"
+          value={formValue.lastName}
+          onChange={handleChange}
+        />
+      )}
       <Label htmlFor="password">Confirmez votre mot de passe</Label>
-      {user.ProfileError401 ? (
+      {passwordError ? (
         <Input
           id="password"
           type="password"
@@ -176,11 +191,21 @@ export const ModifyProfile = () => {
         />
       )}
       <Button name={"confirm"} type={"submit"} label={"Confirmer"} />
-      {wantUploadFile ? (
+      {confirmUploadFile ? (
         <NotificationModal>
           <Alerts
             message={"Vous avez changé d'image de profil"}
             name={"success"}
+          />
+        </NotificationModal>
+      ) : null}
+      {firstNameError || lastNameError || passwordError ? (
+        <NotificationModal>
+          <Alerts
+            message={
+              "Vérifier le format de vos noms, ou remplissez les champs vides"
+            }
+            name={"warning"}
           />
         </NotificationModal>
       ) : null}

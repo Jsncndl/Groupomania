@@ -1,7 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { NotificationModal } from "../../utils/hooks/modals/modals";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
-import colors from "../../utils/style/colors";
+import { validateMail } from "../../utils/regexp/regexp";
+import { Alerts } from "../Alerts/Alerts";
 import { Button } from "../Button/Button";
 
 const FormContainer = styled.form`
@@ -21,48 +23,59 @@ const InputContainer = styled.input`
   margin: 0 0 20px 0;
 `;
 
-const ButtonContainer = styled.button`
-  padding: 15px 50px;
-  width: 50%;
-  border: 0px;
-  border-radius: 50px;
-  font-size: 16px;
-  background-color: ${colors.primary};
-  color: white;
-  transition: transform;
-  transition-timing-function: ease;
-  transition-duration: 500ms;
-  align-self: center;
-  &:hover {
-    transform: scale(105%);
-  }
-`;
-
 export const Login: React.FC = () => {
   const [formValue, setFormValue] = useState({
     email: "",
     password: "",
   });
+  const [validateMailError, setValidateMailError] = useState(false);
 
   const UserCtx = useUserContext();
 
   const handleChange = async (event: any) => {
     event.preventDefault();
+    setValidateMailError(false);
     setFormValue({ ...formValue, [event.target.name]: event.target.value });
   };
 
   const onSubmit = (event: any) => {
     event.preventDefault();
+    if (!validateMail(formValue.email)) {
+      return setValidateMailError(true);
+    }
     UserCtx.login(formValue.email, formValue.password);
   };
 
   return (
     <FormContainer onSubmit={onSubmit}>
       <LabelContainer htmlFor="email">Email</LabelContainer>
-      <InputContainer type="email" name="email" onChange={handleChange} />
+      <InputContainer
+        type="email"
+        name="email"
+        id="email"
+        onChange={handleChange}
+      />
       <LabelContainer htmlFor="password">Mot de passe</LabelContainer>
-      <InputContainer type="password" name="password" onChange={handleChange} />
+      <InputContainer
+        type="password"
+        name="password"
+        id="password"
+        onChange={handleChange}
+      />
       <Button name="confirm" type="submit" label="Confirmer" />
+      {validateMailError ? (
+        <NotificationModal>
+          <Alerts message={"Vérifier votre adress email"} name={"warning"} />
+        </NotificationModal>
+      ) : null}
+      {UserCtx.errorLogin ? (
+        <NotificationModal>
+          <Alerts
+            message={"Email ou mot de passe incorrect"}
+            name={"warning"}
+          />
+        </NotificationModal>
+      ) : null}
     </FormContainer>
   );
 };

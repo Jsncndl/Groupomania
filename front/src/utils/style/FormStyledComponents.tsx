@@ -49,7 +49,7 @@ export const UploadButton = styled.label`
   padding: 5px 10px;
   border-radius: 20px;
   background-color: ${colors.primary};
-  color: white;
+  color: black;
   width: fit-content;
   cursor: pointer;
 `

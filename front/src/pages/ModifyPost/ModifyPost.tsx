@@ -14,15 +14,16 @@ import {
   TextArea,
   UploadButton,
 } from "../../utils/style/FormStyledComponents";
-import { Alerts } from "../Alerts/Alerts";
-import { Button } from "../Button/Button";
-import { MainHeader } from "../MainHeader/MainHeader";
+import { Alerts } from "../../components/Alerts/Alerts";
+import { Button } from "../../components/Button/Button";
+import { MainHeader } from "../../components/MainHeader/MainHeader";
+import { Loader } from "../../components/Loader/Loader";
+import { ErrorPage } from "../Error/Error";
 
 const PostImageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
-
 `;
 
 const ImageContainer = styled.div`
@@ -30,15 +31,12 @@ const ImageContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   align-self: center;
-  
 `;
 
 const Image = styled.img`
   max-height: 300px;
   align-self: center;
 `;
-
-/////////////////////////////////////////CSS////////////////////////////////////////////
 
 export const ModifyPost: React.FC = () => {
   const UserCtx = useUserContext();
@@ -60,15 +58,12 @@ export const ModifyPost: React.FC = () => {
   const [messageError, setMessageError] = useState(false);
   const [wantDeleteImage, setWantDeleteImage] = useState("");
 
-  let count = 0;
-
   useEffect(() => {
     if (paramValue) {
       PostCtx.getPost(paramValue);
     }
     setIsCurrentPost(true);
-    if (isCurrentPost && count === 0) {
-      count++;
+    if (isCurrentPost) {
       setFormValue({
         ...formValue,
         title: PostCtx.currentPost.title,
@@ -94,7 +89,7 @@ export const ModifyPost: React.FC = () => {
 
   const deleteFileUpload = (event: any) => {
     event.preventDefault();
-    setWantDeleteImage(PostCtx.currentPost.imageUrl)
+    setWantDeleteImage(PostCtx.currentPost.imageUrl);
     setDeleteNotif(true);
     setTimeout(() => setDeleteNotif(false), 6000);
   };
@@ -105,7 +100,7 @@ export const ModifyPost: React.FC = () => {
       if (uploadFile) {
         postFormData.append("image", uploadFile);
       }
-      if(wantDeleteImage) {
+      if (wantDeleteImage) {
         postFormData.set("deleteImage", wantDeleteImage);
       }
       postFormData.append("userId", UserCtx.userDetails.userId);
@@ -119,8 +114,11 @@ export const ModifyPost: React.FC = () => {
     }
   };
 
-  return (
+  return UserCtx.error || PostCtx.error ? (
+    <ErrorPage />
+  ) : (
     <main>
+      {PostCtx.isLoading && <Loader />}
       <MainHeader />
       <FormContainer>
         <Form onSubmit={handleSubmit}>
@@ -203,26 +201,26 @@ export const ModifyPost: React.FC = () => {
           />
         </Form>
       </FormContainer>
-      {titleError ? (
+      {titleError && (
         <NotificationModal>
           <Alerts message={"Le titre doit être renseigné"} name={"warning"} />
         </NotificationModal>
-      ) : null}
-      {messageError ? (
+      )}
+      {messageError && (
         <NotificationModal>
           <Alerts message={"Le message est nécéssaire"} name={"warning"} />
         </NotificationModal>
-      ) : null}
-      {uploadNotif ? (
+      )}
+      {uploadNotif && (
         <NotificationModal>
           <Alerts message={"Votre image à été remplacée"} name={"success"} />
         </NotificationModal>
-      ) : null}
-      {deleteNotif ? (
+      )}
+      {deleteNotif && (
         <NotificationModal>
           <Alerts message={"Votre image à été supprimée"} name={"success"} />
         </NotificationModal>
-      ) : null}
+      )}
     </main>
   );
 };

@@ -12,14 +12,14 @@ import logoOnLike from "../../assets/likeOn.svg";
 import logoOffLike from "../../assets/likeOff.svg";
 import { NotificationModal } from "../../utils/hooks/modals/modals";
 import { Confirmation } from "../Confirmation/Confirmation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Alerts } from "../Alerts/Alerts";
 import { ImageModal } from "../ImageModal/ImageModal";
 import { mediaQueries } from "../../utils/style/mediaQueries";
 
 dayjs.extend(relativeTime);
 
-interface PostProps {
+export interface PostProps {
   _id: string;
   index: number;
   date: Date;
@@ -115,7 +115,7 @@ const PostMessageContainer = styled.div`
 `;
 
 const PostTitleContainer = styled.h2`
-  padding : 0 25px 0 25px;
+  padding: 0 25px 0 25px;
   margin: 20px 0;
 
   @media (min-width: ${mediaQueries.medium}) {
@@ -180,7 +180,7 @@ export const PostWrapper = ({
   usersLiked,
   currentUserLiked,
 }: PostProps) => {
-  const currentUser = useUserContext().userDetails;
+  const UserCtx = useUserContext();
   const PostsCtx = usePostContext();
 
   const [wantDelete, setWantDelete] = useState(false);
@@ -220,6 +220,7 @@ export const PostWrapper = ({
 
   return (
     <PostMainContainer key={index} id={_id}>
+      {/* Header of post container, with author image, names, date */}
       <ProfileWrapper>
         <ProfileMainContainer>
           <ProfileImageWrapper>
@@ -233,19 +234,23 @@ export const PostWrapper = ({
             <PostDate>{dayjs(date).locale(locale).fromNow()}</PostDate>
           </ProfileNameWrapper>
         </ProfileMainContainer>
-        {userId === currentUser.userId || currentUser.isAdmin ? (
+
+        {/* If user is the author of the post, or user is admin, display edit and delete buttons */}
+        {userId === UserCtx.userDetails.userId || UserCtx.userDetails.isAdmin ? (
           <ProfileButtonContainer data-id={_id}>
             <Link to={`/post=${_id}`}>
               <LogoContainer>
-                <Logo src={logoEdit} />
+                <Logo src={logoEdit} alt="Modifier le post" />
               </LogoContainer>
             </Link>
             <LogoContainer data-id={_id} onClick={handleDeleteButton}>
-              <Logo src={logoDelete} />
+              <Logo src={logoDelete} alt="Supprimer le post" />
             </LogoContainer>
           </ProfileButtonContainer>
         ) : null}
       </ProfileWrapper>
+
+      {/* Post container to display title, message, eventually image if post contain image url */}
       <div>
         <PostTitleContainer>{title}</PostTitleContainer>
         <PostMessageContainer>{message}</PostMessageContainer>
@@ -258,21 +263,27 @@ export const PostWrapper = ({
             />
           </PostImageWrapper>
         ) : null}
+
+        {/* Details container with count of likes and like button
+      If likes are up to 2 change spelling and conjugation */}
         <PostDetailsWrapper data-id={_id}>
           {likes >= 2 ? (
             <span>{likes} personnes aiment cette publication.</span>
           ) : (
             <span>{likes} personne aime cette publication.</span>
           )}
+          {/* Change logo of like button if user like or ever like post */}
           <LogoContainer data-id={_id} onClick={handleLike}>
             {currentUserLiked ? (
-              <LogoOnLike src={logoOnLike} data-name="like" />
+              <LogoOnLike src={logoOnLike} data-name="like" alt={"J'aime"} />
             ) : (
-              <Logo src={logoOffLike} data-name="unlike" />
+              <Logo src={logoOffLike} data-name="unlike" alt={"Je n'aime plus"} />
             )}
           </LogoContainer>
         </PostDetailsWrapper>
       </div>
+
+      {/* On click on delete button*/}
       {wantDelete ? (
         <NotificationModal>
           <Confirmation
@@ -287,16 +298,22 @@ export const PostWrapper = ({
           />
         </NotificationModal>
       ) : null}
+
+      {/* Alerts if user confirm delete */}
       {confirmDelete ? (
         <NotificationModal>
           <Alerts message={"Publication supprimée"} name={"success"} />
         </NotificationModal>
       ) : null}
+
+      {/* Alerts if user like */}
       {like ? (
         <NotificationModal>
           <Alerts message={"Vous avez aimez la publication"} name={"success"} />
         </NotificationModal>
       ) : null}
+
+      {/* Alerts if user unlike */}
       {unLike ? (
         <NotificationModal>
           <Alerts
@@ -305,7 +322,9 @@ export const PostWrapper = ({
           />
         </NotificationModal>
       ) : null}
-      {fullImage === imageUrl && !exitFullImage ? (
+
+      {/* If user click on image, modal appear to enlarge image */}
+      {fullImage !== "" && !exitFullImage ? (
         <NotificationModal>
           <ImageModal
             src={fullImage}

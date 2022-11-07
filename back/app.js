@@ -21,6 +21,11 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+/* app.use(express.static('../front/build'))
+app.get("*", (_, res) => {
+  res.sendFile(path.join(__dirname, '../front/build/index.html'))
+}) */
+
 app.use('/api/user', userRoutes)
 app.use('/api/post', postRoutes)
 

@@ -57,6 +57,7 @@ export const NewPost: React.FC = () => {
       PostCtx.newPost(postFormData);
 
       setFormValue({ title: "", message: "" });
+      setUploadFile(undefined)
       setNewPostNotif(true);
       setTimeout(() => setNewPostNotif(false), 6000);
     } else {
@@ -94,6 +95,7 @@ export const NewPost: React.FC = () => {
             onChange={handleChange}
             value={formValue.message}
             name="message"
+            id="message"
             placeholder="Votre message ..."
             color={colors.primary}
           />
@@ -102,14 +104,16 @@ export const NewPost: React.FC = () => {
             onChange={handleChange}
             value={formValue.message}
             name="message"
+            id="message"
             placeholder="Votre message ..."
           />
         )}
-        <Label htmlFor="file">Ajouter une image:</Label>
+        <Label>Ajouter une image:</Label>
         <UploadButton>
           <InputUploadFile
             type="file"
             name="file"
+            id="file"
             accept="image/png, image/jpeg, image/jpg"
             onChange={(event) => onFileUpload(event)}
           />

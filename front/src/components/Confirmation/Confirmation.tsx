@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styled from "styled-components";
 import { mediaQueries } from "../../utils/style/mediaQueries";
 import { Button } from "../Button/Button";

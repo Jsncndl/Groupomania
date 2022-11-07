@@ -3,8 +3,11 @@ import styled from "styled-components";
 import { Button } from "../../components/Button/Button";
 import { Login } from "../../components/Login/Login";
 import { Signup } from "../../components/Signup/Signup";
+import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
+import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
 import colors from "../../utils/style/colors";
 import { mediaQueries } from "../../utils/style/mediaQueries";
+import { ErrorPage } from "../Error/Error";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -14,7 +17,6 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
 
 const MainContainer = styled.main`
   background-color: white;
@@ -40,8 +42,12 @@ const Nav = styled.nav`
 
 export const Landing: React.FC = () => {
   const [isSignup, setIsSignup] = useState(false);
+  const userError = useUserContext().error;
+  const postError = usePostContext().error;
 
-  return isSignup ? (
+  return userError || postError ? (
+    <ErrorPage />
+  ) : isSignup ? (
     <Wrapper>
       <MainContainer>
         <Nav>
@@ -56,7 +62,7 @@ export const Landing: React.FC = () => {
             label="Inscription"
             type="button"
             onClick={() => setIsSignup(true)}
-            fontColor={colors.primary}
+            color={colors.primary}
           />
         </Nav>
         <Signup />
@@ -71,7 +77,7 @@ export const Landing: React.FC = () => {
             label="Connexion"
             onClick={() => setIsSignup(false)}
             type="button"
-            fontColor={colors.primary}
+            color={colors.primary}
           />
           <Button
             name="signup"

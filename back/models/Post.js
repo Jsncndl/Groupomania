@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
 const postSchema = new Schema({
   date: { type: Date, required: true },
@@ -12,7 +12,6 @@ const postSchema = new Schema({
   userImage: { type: String },
   likes: { type: Number },
   usersLiked: { type: [String] },
-  comments: [{ type: Schema.Types.ObjectId, ref: "comments" }]
 });
 
 module.exports = mongoose.model("Post", postSchema);

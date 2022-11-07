@@ -73,7 +73,6 @@ exports.login = (req, res, next) => {
 };
 
 exports.modifyProfile = (req, res, next) => {
-  console.log(req.body)
   const userObject = req.file
     ? {
         ...req.body,

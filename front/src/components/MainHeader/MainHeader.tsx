@@ -67,10 +67,15 @@ const NavContainer = styled.nav`
   }
   `;
 
-const HelloContainer = styled.div`
+const HelloContainer = styled.h1`
   display: none;
+  
   @media (min-width: ${mediaQueries.large}) {
     display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-weight: normal;
   }
 `;
 
@@ -134,7 +139,7 @@ export const MainHeader = () => {
           />
         </ProfileImageWrapper>
         <LogoLogoutContainer onClick={handleLogout}>
-          <LogoLogout src={logoLogout} />
+          <LogoLogout src={logoLogout} alt="Déconnexion" />
         </LogoLogoutContainer>
       </NavContainer>
       {wantLogout ? (

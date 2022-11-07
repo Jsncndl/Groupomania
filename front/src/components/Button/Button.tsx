@@ -2,7 +2,7 @@ import { HTMLAttributes } from "react";
 import styled from "styled-components";
 import colors from "../../utils/style/colors";
 
-const ButtonLogin = styled.button<{ fontColor?: string }>`
+const ButtonLogin = styled.button<{ color?: string }>`
   width: 50%;
   padding: 15px;
   border-radius: 20px 0 0;
@@ -10,19 +10,17 @@ const ButtonLogin = styled.button<{ fontColor?: string }>`
   background: white;
   font-size: 20px;
   cursor: pointer;
-  color: ${({ fontColor }) => fontColor};
-  border-top: ${({ fontColor }) => `solid 2px ${fontColor}`};
+  border-top: ${({ color }) => `solid 2px ${color}`};
 `;
 
-const ButtonSignup = styled.button<{ fontColor?: string }>`
+const ButtonSignup = styled.button<{ color?: string }>`
   width: 50%;
   padding: 15px;
   border: 0;
   border-radius: 0 20px 0 0;
   font-size: 20px;
   background: white;
-  color: ${({ fontColor }) => fontColor};
-  border-top: ${({ fontColor }) => `solid 2px ${fontColor}`};
+  border-top: ${({ color }) => `solid 2px ${color}`};
   cursor: pointer;
 `;
 
@@ -33,7 +31,7 @@ const ButtonConfirm = styled.button`
   border-radius: 50px;
   font-size: 16px;
   background-color: ${colors.primary};
-  color: white;
+  color: black;
   align-self: center;
   transition: transform 500ms ease;
   cursor: pointer;

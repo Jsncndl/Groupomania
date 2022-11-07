@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { NotificationModal } from "../../utils/hooks/modals/modals";
 import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext";
 import colors from "../../utils/style/colors";
-import { Button } from "../Button/Button";
-import { MainHeader } from "../MainHeader/MainHeader";
-import { ModifyProfile } from "../ModifyProfile/ModifyProfile";
+import { Button } from "../../components/Button/Button";
+import { MainHeader } from "../../components/MainHeader/MainHeader";
+import { ModifyProfile } from "../../components/ModifyProfile/ModifyProfile";
+import { usePostContext } from "../../utils/hooks/usePostContext/usePostContext";
+import { ErrorPage } from "../Error/Error";
+import { Loader } from "../../components/Loader/Loader";
 
-////////// CSS /////////
 const MainContainer = styled.main`
   display: flex;
   flex-direction: column;
@@ -38,48 +39,35 @@ const ProfileImage = styled.img`
   position: relative;
   width: 100%;
 `;
-///////// CSS //////////
-
-/* interface profileProps {
-  userId: string;
-  token: string;
-  lastName: string;
-  firstName: string;
-  email: string;
-  userImage: string;
-}
-
-const defaultProfileProps = {
-  userId: "",
-  token: "",
-  lastName: "",
-  firstName: "",
-  email: "",
-  userImage: "",
-}; */
 
 export const Profile: React.FC = () => {
   const [wantModify, setWantModify] = useState(false);
 
-  const user = useUserContext();
+  const user = useUserContext().userDetails;
+  const userError = useUserContext().error;
+  const userIsLoading = useUserContext().isLoading;
+  const postError = usePostContext().error;
 
   const handleButton = (event: any) => {
     event.preventDefault();
     wantModify ? setWantModify(false) : setWantModify(true);
   };
 
-  return (
+  return userError || postError ? (
+    <ErrorPage />
+  ) : (
     <>
+      {userIsLoading && <Loader />}
       <MainHeader />
       <MainContainer>
         <ProfileCard>
           <ProfileImageContainer>
-            <ProfileImage src={user.userDetails.userImage} alt="profil" />
+            <ProfileImage src={user.userImage} alt="profil" />
           </ProfileImageContainer>
           <h1>
-            {user.userDetails.firstName} {user.userDetails.lastName}
+            {user.firstName} {user.lastName}
           </h1>
-          <div>Vos coordonées: {user.userDetails.email}</div>
+          <div>Vos coordonnées: {user.email}</div>
           <div id="modifyFormContainer">
             <Button
               type="button"
@@ -88,9 +76,7 @@ export const Profile: React.FC = () => {
               label={"Modifier votre profil"}
               style={{ width: "100%" }}
             />
-            {wantModify ? (
-                <ModifyProfile />
-            ) : null}
+            {wantModify && <ModifyProfile />}
           </div>
         </ProfileCard>
       </MainContainer>

@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ModifyPost } from "./components/ModifyPost/ModifyPost";
-import { Profile } from "./components/Profile/Profile";
+import { ModifyPost } from "./pages/ModifyPost/ModifyPost";
+import { Profile } from "./pages/Profile/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { Home } from "./pages/Home/Home";
 import { Landing } from "./pages/Landing/Landing";
@@ -8,6 +8,7 @@ import { useUserContext } from "./utils/hooks/useUserContext/useUserContext";
 
 export const App: React.FC = () => {
   const UserCtx = useUserContext();
+
   return (
     <BrowserRouter>
       <Routes>
@@ -37,6 +38,16 @@ export const App: React.FC = () => {
           element={
             <ProtectedRoute
               outlet={<ModifyPost />}
+              isAuthenticated={false}
+              authenticationPath={"/"}
+            />
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <ProtectedRoute
+              outlet={<Home />}
               isAuthenticated={false}
               authenticationPath={"/"}
             />
