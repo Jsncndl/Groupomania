@@ -146,14 +146,22 @@ exports.deleteProfile = (req, res, next) => {
           if (!valid) {
             return res.status(401).json({ message: "Not authorize" });
           } else {
-            const filename = user.profileImage.split("/images/")[1];
-            fs.unlink(`images/${filename}`, () => {
+            const filename = user.userImage.split("/images/")[1];
+            if (filename !== "profile.png") {
+              fs.unlink(`images/${filename}`, () => {
+                User.deleteOne({ _id: req.auth.userId })
+                  .then(() =>
+                    res.status(200).json({ message: "Account deleted" })
+                  )
+                  .catch((error) => res.status(400).json({ error }));
+              });
+            } else {
               User.deleteOne({ _id: req.auth.userId })
                 .then(() =>
                   res.status(200).json({ message: "Account deleted" })
                 )
                 .catch((error) => res.status(400).json({ error }));
-            });
+            }
           }
         });
       })
