@@ -29,10 +29,10 @@ Go to back/ directory
 ```
 Create new file named .env and copy / paste with your personnal value
 ```bash
-  DB_AUTH= "your connection uri" **Required**
-  ENV= "set your favorite port"
-  TOKEN_KEY= "RANDOM_SECRET_TOKEN_KEY" **Required**
-  ADMIN_ID= "admin ID" 
+  DB_AUTH= "your connection uri"
+  ENV= "set your favorite port to run server"
+  TOKEN_KEY= "RANDOM_SECRET_TOKEN_KEY"
+  ADMIN_ID= "userId of admin" 
 ```
 
 ### 2. Frontend
