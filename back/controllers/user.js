@@ -108,9 +108,11 @@ exports.modifyProfile = (req, res, next) => {
             .then(() => {
               if (req.file) {
                 const filename = user.userImage.split("/images/")[1];
-                fs.unlink(`images/${filename}`, (err) => {
-                  if (err) throw err;
-                });
+                if (filename !== "profile.png") {
+                  fs.unlink(`images/${filename}`, (err) => {
+                    if (err) throw err;
+                  });
+                }
               }
               Post.updateMany(
                 { userId: req.auth.userId },

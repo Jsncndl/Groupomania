@@ -64,16 +64,16 @@ The app should open on http://localhost:3001/.
   GET /api/user/${id}
 ```
 
-| Header | Parameter | Type     | Description                |
-|:------  | :-------- | :------- | :------------------------- |
-| `Authorization`:`Bearer ${your token}` | `${id}`| `string` | **Required**. User ID      |
+| Header                                 | Parameter | Type     | Description                |
+| :------------------------------------- | :-------- | :------- | :------------------------- |
+| `Authorization`:`Bearer ${your token}` | `${id}`   | `string` | **Required**. User ID      |
 
 #### Response :
-|Status|Body schema|
-|:-----|:---|
-| `200: OK`|`{ "lastname": "", "firstname": "", "email": "", "userImage": "" }`|
-|`400: Bad request` |`{"error": {...} }`|
-|`401: Unauthorized`|`{"error": { "name": "JsonWebTokenError", "message":"invalid token"}}`|
+| Status             | Body schema                                                           |
+| :----------------- | :-------------------------------------------------------------------- |
+| `200: OK`          | `{ "lastname": "", "firstname": "", "email": "", "userImage": "" }`   |
+|`400: Bad request`  | `{"error": {...} }`                                                   |
+|`401: Unauthorized` |`{"error": { "name": "JsonWebTokenError", "message":"invalid token"}}`|
 
 ### POST user signup
 
@@ -81,18 +81,18 @@ The app should open on http://localhost:3001/.
   POST /api/user/signup
 ```
 
-| Body      | Description                       |
-| :--------  | :-------------------------------- |
-| `lastname`      | **Required**. User last name |
-|`firstname`| **Required**. User first name |
-|`email`| **Required & unique**. User email|
-|`password`|**Required**. User password|
+| Body        | Description                       |
+| :---------- | :-------------------------------- |
+| `lastname`  | **Required**. User last name      |
+| `firstname` | **Required**. User first name     |
+| `email`     | **Required & unique**. User email |
+| `password`  | **Required**. User password       |
 
 #### Response :
-|Status|Body schema|
-|:-----|:---|
-| `201: Created`|`{ "message": "Account successfully created" }`|
-|`400: Bad request` |`{"error": { ... } }` |
+| Status             | Body schema                                    |
+| :----------------- | :--------------------------------------------- |
+| `201: Created`     | `{ "message": "Account successfully created" }`|
+| `400: Bad request` | `{"error": { ... } }`                          |
 
 
 ### POST user login
@@ -100,16 +100,16 @@ The app should open on http://localhost:3001/.
 ```http
   POST /api/user/login
 ```
-| Body      | Description                       |
-| :--------  | :-------------------------------- |
-|`email`| **Required**. User email|
-|`password`|**Required**. User password|
+| Body       | Description                 |
+| :--------- | :-------------------------- |
+| `email`    | **Required**. User email    |
+| `password` | **Required**. User password |
 
 #### Response :
-|Status|Body schema|
-|:-----|:---|
-| `200: OK`|`{ "userId": "", "token": "", "lastName": "", "firstName": "", "userImage": "", "email": "", "isAdmin?" }`|
-|`401: Unauthorized` |`{"message": "Wrong email / password"}` |
+| Status | Body schema                                        |
+| :----- | :------------------------------------------------- |
+| `200: OK`     | `{ "userId": "", "token": "", "lastName": "", "firstName": "", "userImage": "", "email": "", "isAdmin?" }`|
+| `401: Unauthorized` | `{"message": "Wrong email / password"}` |
 
 ### PUT user modify profile
 
