@@ -1,8 +1,5 @@
 import { ModifyProfile } from "./ModifyProfile";
 import { fireEvent, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { NotificationModal } from "../../utils/hooks/modals/modals";
-import { Alerts } from "../Alerts/Alerts";
 
 describe("<ModifyProfile /> form should render", () => {
   it("Should render a form", async () => {

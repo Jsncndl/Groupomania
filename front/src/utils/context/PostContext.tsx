@@ -118,34 +118,6 @@ export const PostContextProvider = (props: any) => {
       });
   }, [user]);
 
-  /*   const allposts = async () => {
-    await axios
-      .get(process.env.REACT_APP_API_URL + "post/", {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + user.userDetails.token,
-        },
-      })
-      // If response OK, posts array will be returned
-      // Sort posts array by date, the most recent first
-      // Save it in posts state
-      .then((res) => {
-        res.data.posts.sort((a: any, b: any) => {
-          return dayjs(b.date).unix() - dayjs(a.date).unix();
-        });
-        setPosts(res.data.posts);
-        setIsLoading(false);
-      })
-      // If error 401 will be returned if token is expired
-      // set expiredSession true in userContext to redirect user on login and get new token
-      // Else set error sate true
-      .catch((error) => {
-        error.response.status === 401
-          ? (user.expiredSession = true)
-          : setError(true);
-        setIsLoading(false);
-      });
-  }; */
   useEffect(() => {
     if (
       (user.isLoggedIn || (user.isLoggedIn && hasModif)) &&
@@ -161,9 +133,6 @@ export const PostContextProvider = (props: any) => {
     user.isUserModified,
     user.userDetails.token,
   ]);
-  // Warning because function getAllPosts is call
-  // but not include on dependancy to avoid infinite loop
-  // Essayer const toto = useCallback getAllPosts
 
   // Function to send new post, require all post info's in a FormData
   const newPost = async (newPost: FormData) => {
@@ -182,7 +151,7 @@ export const PostContextProvider = (props: any) => {
         setIsLoading(false);
       })
       // Else set error state true
-      .catch((error) => {
+      .catch(() => {
         setError(true);
         setIsLoading(false);
       });
