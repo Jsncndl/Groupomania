@@ -7,6 +7,8 @@ import { useUserContext } from "../../utils/hooks/useUserContext/useUserContext"
 import { ErrorPage } from "../Error/Error";
 
 export const Home: React.FC = () => {
+  const user = useUserContext().userDetails
+
   const userError = useUserContext().error;
   const postError = usePostContext().error;
 
@@ -18,7 +20,11 @@ export const Home: React.FC = () => {
   ) : (
     <>
       {(userLoader || postLoader) && <Loader />}
-      <MainHeader />
+      <MainHeader
+        firstName={user.firstName}
+        userImage={user.userImage}
+        logout={() => {}}
+      />
       <NewPost />
       <Posts />
     </>

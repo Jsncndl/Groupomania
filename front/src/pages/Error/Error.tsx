@@ -30,7 +30,8 @@ export const ErrorPage = () => {
         <Button
           label={"Revenir à la page d'accueil"}
           onClick={() => {
-            window.location.replace("http://localhost:3001/");
+            localStorage.clear();
+            return window.location.reload();
           }}
           name={"confirm"}
           type={"button"}

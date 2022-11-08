@@ -12,11 +12,6 @@ export const validateName = (name: string) => {
       name
     )
   ) {
-    console.log(
-      /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u.test(
-        name
-      )
-    );
     return true;
   } else {
     return false;

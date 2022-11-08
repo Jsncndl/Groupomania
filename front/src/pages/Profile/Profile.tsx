@@ -58,7 +58,11 @@ export const Profile: React.FC = () => {
   ) : (
     <>
       {userIsLoading && <Loader />}
-      <MainHeader />
+      <MainHeader
+        firstName={user.firstName}
+        userImage={user.userImage}
+        logout={() => {}}
+      />
       <MainContainer>
         <ProfileCard>
           <ProfileImageContainer>

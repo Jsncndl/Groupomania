@@ -47,9 +47,10 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <FormContainer onSubmit={onSubmit}>
+    <FormContainer onSubmit={onSubmit} role="login-form">
       <LabelContainer htmlFor="email">Email</LabelContainer>
       <InputContainer
+      data-testid="emailInput"
         type="email"
         name="email"
         id="email"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import colors from "../../utils/style/colors";
 
 import styled from "styled-components";
@@ -80,7 +80,7 @@ export const Signup: React.FC = () => {
   };
 
   return (
-    <FormContainer>
+    <FormContainer role="signup-form">
       {formError ? (
         <>
           <LabelContainer htmlFor="firstName">Prénom</LabelContainer>
@@ -122,9 +122,11 @@ export const Signup: React.FC = () => {
         <>
           <LabelContainer htmlFor="firstName">Prénom</LabelContainer>
           <InputContainer
+            data-testid="firstNameInput"
             name="firstName"
             type="text"
             onChange={handleChange}
+            value=""
           />
           <LabelContainer htmlFor="lastName">Nom</LabelContainer>
           <InputContainer name="lastName" type="text" onChange={handleChange} />

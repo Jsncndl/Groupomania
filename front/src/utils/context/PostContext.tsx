@@ -89,8 +89,8 @@ export const PostContextProvider = (props: any) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Function to fetch all posts, only need token of user
-  const getAllPosts = useCallback(() => {
-    axios
+  const getAllPosts = useCallback(async () => {
+    await axios
       .get(process.env.REACT_APP_API_URL + "post/", {
         headers: {
           "Content-Type": "multipart/form-data",

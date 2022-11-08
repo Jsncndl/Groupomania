@@ -3,7 +3,7 @@ import { PostWrapper } from "./PostWrapper";
 
 
 export default {
-  title: "Nav/PostWrapper",
+  title: "Post/Post Wrapper",
   component: PostWrapper,
 } as ComponentMeta<typeof PostWrapper>
 

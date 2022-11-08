@@ -117,7 +117,13 @@ const LogoLogout = styled.img`
   opacity: 70%;
 `;
 
-export const MainHeader = () => {
+type MainHeaderProps = {
+  firstName: string;
+  userImage: string;
+  logout: () => void;
+}
+
+export const MainHeader = ({...props}: MainHeaderProps) => {
   const UserCtx = useUserContext();
   const [wantLogout, setWantLogout] = useState(false);
 
@@ -126,15 +132,15 @@ export const MainHeader = () => {
   };
 
   return (
-    <HeaderContainer>
+    <HeaderContainer role="header">
       <StyledLink to="/">
         <LogoContainer src={logo} alt="Logo" />
       </StyledLink>
       <NavContainer>
-        <HelloContainer>Hello {UserCtx.userDetails.firstName} !</HelloContainer>
+        <HelloContainer>Hello {props.firstName} !</HelloContainer>
         <ProfileImageWrapper to={"../user/" + UserCtx.userDetails.userId}>
           <ProfileImageContainer
-            src={UserCtx.userDetails.userImage}
+            src={props.userImage}
             alt="Mon compte"
           />
         </ProfileImageWrapper>

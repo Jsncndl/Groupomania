@@ -16,7 +16,6 @@ export function NotificationModal({ children }: ModalProps) {
 
   useEffect(() => {
     const el = elRef.current!; // non-null assertion because it will never be null
-    console.log(el);
     NotificationModalRoot.appendChild(el);
     return () => {
       NotificationModalRoot.removeChild(el);

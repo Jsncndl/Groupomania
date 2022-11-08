@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { Landing } from "./Landing";
 
 export default {
-  title: "Nav/Landing",
+  title: "Landing/Landing Page",
   component: Landing,
 } as ComponentMeta<typeof Landing>;
 
@@ -14,5 +14,3 @@ const Template: ComponentStory<typeof Landing> = (args) => (
 );
 
 export const Signup = Template.bind({});
-
-Signup.args = {};

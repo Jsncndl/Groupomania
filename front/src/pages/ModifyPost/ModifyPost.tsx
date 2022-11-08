@@ -70,6 +70,7 @@ export const ModifyPost: React.FC = () => {
         message: PostCtx.currentPost.message,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PostCtx.currentPost._id]);
 
   const postFormData = new FormData();
@@ -119,7 +120,11 @@ export const ModifyPost: React.FC = () => {
   ) : (
     <main>
       {PostCtx.isLoading && <Loader />}
-      <MainHeader />
+      <MainHeader
+        firstName={UserCtx.userDetails.firstName}
+        userImage={UserCtx.userDetails.userImage}
+        logout={() => {}}
+      />
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <Label htmlFor="title">Titre:</Label>

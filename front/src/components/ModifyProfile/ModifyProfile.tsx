@@ -38,6 +38,7 @@ export const ModifyProfile = () => {
       firstName: user.userDetails.firstName,
       lastName: user.userDetails.lastName,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.userDetails.firstName, user.userDetails.lastName, user.error]);
 
   const userFormData = new FormData();
@@ -109,10 +110,12 @@ export const ModifyProfile = () => {
 
   return (
     <Form
+      data-testid="modifyProfileForm"
       id="modifyForm"
       onSubmit={handleSubmit}
       style={{ alignItems: "center" }}>
       <Button
+      data-testid="buttonNewPassword"
         name={"confirm"}
         type={"button"}
         label={"Changer votre mot de passe"}
@@ -122,6 +125,7 @@ export const ModifyProfile = () => {
         <>
           <Label htmlFor="newPassword">Changer le mot de passe</Label>
           <Input
+          data-testid="newPasswordInput"
             id="newPassword"
             name="newPassword"
             type="password"
@@ -132,6 +136,7 @@ export const ModifyProfile = () => {
       <Label htmlFor="file">Image de profil</Label>
       <UploadButton>
         <InputUploadFile
+        data-testid="buttonUploadFile"
           type="file"
           name="file"
           accept="image/png, image/jpeg, image/jpg"
@@ -144,14 +149,17 @@ export const ModifyProfile = () => {
         <Input
           id="firstName"
           name="firstName"
+          type="text"
           value={formValue.firstName}
           onChange={handleChange}
           color={colors.primary}
         />
       ) : (
         <Input
+        data-testid="firstnameinput"
           id="firstName"
           name="firstName"
+          type="text"
           value={formValue.firstName}
           onChange={handleChange}
         />

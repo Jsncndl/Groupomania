@@ -14,13 +14,14 @@ export default {
 
 const Template: ComponentStory<typeof MainHeader> = (args) => (
   <MemoryRouter>
-    <MainHeader />
+    <MainHeader
+      {...args}
+    />
   </MemoryRouter>
 );
 
 export const HeaderComponent = Template.bind({});
 HeaderComponent.args = {
   firstName: "Test",
-  userId: "TestID",
-  userImage: "http://localhost:3000/images/profile.png"
-}
+  userImage: "http://localhost:3000/images/profile.png",
+};

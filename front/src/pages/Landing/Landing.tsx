@@ -84,6 +84,7 @@ export const Landing: React.FC = () => {
             label="Inscription"
             type="button"
             onClick={() => setIsSignup(true)}
+            data-testid="signup-button"
           />
         </Nav>
         <Login />
