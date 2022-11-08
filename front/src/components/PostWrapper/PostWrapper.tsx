@@ -236,7 +236,8 @@ export const PostWrapper = ({
         </ProfileMainContainer>
 
         {/* If user is the author of the post, or user is admin, display edit and delete buttons */}
-        {userId === UserCtx.userDetails.userId || UserCtx.userDetails.isAdmin ? (
+        {userId === UserCtx.userDetails.userId ||
+        UserCtx.userDetails.isAdmin ? (
           <ProfileButtonContainer data-id={_id}>
             <Link to={`/post=${_id}`}>
               <LogoContainer>
@@ -277,7 +278,11 @@ export const PostWrapper = ({
             {currentUserLiked ? (
               <LogoOnLike src={logoOnLike} data-name="like" alt={"J'aime"} />
             ) : (
-              <Logo src={logoOffLike} data-name="unlike" alt={"Je n'aime plus"} />
+              <Logo
+                src={logoOffLike}
+                data-name="unlike"
+                alt={"Je n'aime plus"}
+              />
             )}
           </LogoContainer>
         </PostDetailsWrapper>

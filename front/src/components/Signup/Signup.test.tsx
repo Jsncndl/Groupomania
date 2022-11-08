@@ -15,8 +15,10 @@ describe("<Signup /> component", () => {
 
   it("Should handle change in form", async () => {
     render(<Signup />);
-    const firstNameInput = screen.getByTestId("firstNameInput") as HTMLInputElement;
-    firstNameInput.value = "John"
+    const firstNameInput = screen.getByTestId(
+      "firstNameInput"
+    ) as HTMLInputElement;
+    firstNameInput.value = "John";
     expect(firstNameInput).toHaveValue("John");
   });
 });

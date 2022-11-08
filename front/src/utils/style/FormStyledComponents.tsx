@@ -13,25 +13,25 @@ export const FormContainer = styled.div`
   @media (min-width: ${mediaQueries.large}) {
     width: 60%;
   }
-`
+`;
 
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
   padding: 15px 3%;
   margin: auto;
-`
+`;
 
-export const Label =styled.label`
+export const Label = styled.label`
   padding: 0 10px 5px;
-`
+`;
 
 export const Input = styled.input((props) => ({
   width: "80%",
   margin: "0 0 10px",
   padding: "5px",
-  border: props.color + " solid 2px"
-}))
+  border: props.color + " solid 2px",
+}));
 
 export const TextArea = styled.textarea((props) => ({
   padding: "5px",
@@ -41,8 +41,8 @@ export const TextArea = styled.textarea((props) => ({
   maxHeight: "300px",
   fontFamily: "Lato, sans-serif",
   margin: "0 0 10px",
-  border: props.color + " solid 2px"
-}))
+  border: props.color + " solid 2px",
+}));
 
 export const UploadButton = styled.label`
   text-align: center;
@@ -52,8 +52,8 @@ export const UploadButton = styled.label`
   color: black;
   width: fit-content;
   cursor: pointer;
-`
+`;
 
 export const InputUploadFile = styled.input((props) => ({
-  display: "none"
-}))
+  display: "none",
+}));

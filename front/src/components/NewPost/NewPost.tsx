@@ -57,7 +57,7 @@ export const NewPost: React.FC = () => {
       PostCtx.newPost(postFormData);
 
       setFormValue({ title: "", message: "" });
-      setUploadFile(undefined)
+      setUploadFile(undefined);
       setNewPostNotif(true);
       setTimeout(() => setNewPostNotif(false), 6000);
     } else {

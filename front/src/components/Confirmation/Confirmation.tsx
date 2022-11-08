@@ -57,7 +57,6 @@ export const Confirmation = ({
   buttonLabel,
   ...props
 }: ConfirmationProps) => {
-
   return (
     <MainContainer id={"close"}>
       <MessageContainer id={"modalConfirm"}>

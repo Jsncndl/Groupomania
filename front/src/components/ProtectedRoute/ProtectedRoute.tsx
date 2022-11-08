@@ -12,8 +12,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   authenticationPath,
   outlet,
 }: ProtectedRouteProps) => {
-  const userIsLoggedIn = useUserContext().isLoggedIn
-  const userIsAdmin = useUserContext().userDetails.isAdmin
+  const userIsLoggedIn = useUserContext().isLoggedIn;
+  const userIsAdmin = useUserContext().userDetails.isAdmin;
 
   if (userIsLoggedIn || userIsAdmin) {
     isAuthenticated = true;

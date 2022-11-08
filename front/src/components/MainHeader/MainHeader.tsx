@@ -69,7 +69,7 @@ const NavContainer = styled.nav`
 
 const HelloContainer = styled.h1`
   display: none;
-  
+
   @media (min-width: ${mediaQueries.large}) {
     display: block;
     margin: 0;
@@ -121,9 +121,9 @@ type MainHeaderProps = {
   firstName: string;
   userImage: string;
   logout: () => void;
-}
+};
 
-export const MainHeader = ({...props}: MainHeaderProps) => {
+export const MainHeader = ({ ...props }: MainHeaderProps) => {
   const UserCtx = useUserContext();
   const [wantLogout, setWantLogout] = useState(false);
 
@@ -139,10 +139,7 @@ export const MainHeader = ({...props}: MainHeaderProps) => {
       <NavContainer>
         <HelloContainer>Hello {props.firstName} !</HelloContainer>
         <ProfileImageWrapper to={"../user/" + UserCtx.userDetails.userId}>
-          <ProfileImageContainer
-            src={props.userImage}
-            alt="Mon compte"
-          />
+          <ProfileImageContainer src={props.userImage} alt="Mon compte" />
         </ProfileImageWrapper>
         <LogoLogoutContainer onClick={handleLogout}>
           <LogoLogout src={logoLogout} alt="Déconnexion" />

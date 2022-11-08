@@ -14,9 +14,7 @@ export default {
 
 const Template: ComponentStory<typeof MainHeader> = (args) => (
   <MemoryRouter>
-    <MainHeader
-      {...args}
-    />
+    <MainHeader {...args} />
   </MemoryRouter>
 );
 

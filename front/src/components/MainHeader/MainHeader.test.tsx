@@ -6,11 +6,7 @@ describe("Main Header components", () => {
   test("<MainHeader />, should render", async () => {
     render(
       <MemoryRouter>
-        <MainHeader
-          firstName={""}
-          userImage={""}
-          logout={() => {}}
-        />
+        <MainHeader firstName={""} userImage={""} logout={() => {}} />
       </MemoryRouter>
     );
     const header = screen.getByRole("header");

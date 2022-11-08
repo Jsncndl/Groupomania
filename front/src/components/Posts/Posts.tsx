@@ -18,13 +18,7 @@ const MainContainer = styled.div`
 export const Posts: React.FC = () => {
   const PostsCtx = usePostContext();
   const currentUser = useUserContext().userDetails;
-/*
-  console.log(PostsCtx.posts);
 
-     PostsCtx.posts?.sort((a, b) => {
-
-    return dayjs(b.date).unix() - dayjs(a.date).unix();
-  }); */
   return (
     <>
       {PostsCtx.posts?.map((post, index) => {

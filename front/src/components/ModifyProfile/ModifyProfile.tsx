@@ -115,7 +115,7 @@ export const ModifyProfile = () => {
       onSubmit={handleSubmit}
       style={{ alignItems: "center" }}>
       <Button
-      data-testid="buttonNewPassword"
+        data-testid="buttonNewPassword"
         name={"confirm"}
         type={"button"}
         label={"Changer votre mot de passe"}
@@ -125,7 +125,7 @@ export const ModifyProfile = () => {
         <>
           <Label htmlFor="newPassword">Changer le mot de passe</Label>
           <Input
-          data-testid="newPasswordInput"
+            data-testid="newPasswordInput"
             id="newPassword"
             name="newPassword"
             type="password"
@@ -136,7 +136,7 @@ export const ModifyProfile = () => {
       <Label htmlFor="file">Image de profil</Label>
       <UploadButton>
         <InputUploadFile
-        data-testid="buttonUploadFile"
+          data-testid="buttonUploadFile"
           type="file"
           name="file"
           accept="image/png, image/jpeg, image/jpg"
@@ -156,7 +156,7 @@ export const ModifyProfile = () => {
         />
       ) : (
         <Input
-        data-testid="firstnameinput"
+          data-testid="firstnameinput"
           id="firstName"
           name="firstName"
           type="text"

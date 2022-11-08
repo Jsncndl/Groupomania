@@ -16,7 +16,7 @@ const Image = styled.img`
   position: relative;
   max-width: 80%;
   max-height: 80%;
-`
+`;
 
 const Button = styled.button`
   font-size: 40px;
@@ -26,21 +26,19 @@ const Button = styled.button`
   right: 15px;
   border: 0;
   background: none;
-`
-
+`;
 interface ImageModalProps {
   src: string;
   exitButton?: () => void;
 }
 
-
 export const ImageModal = ({ src, exitButton, ...props }: ImageModalProps) => {
   return (
-  <MainContainer>
-    <Button type="button" onClick={exitButton}>
-      X
-    </Button>
-    <Image src={src} alt="Taille agrandi" />
-  </MainContainer>
-  )
+    <MainContainer>
+      <Button type="button" onClick={exitButton}>
+        X
+      </Button>
+      <Image src={src} alt="Taille agrandi" />
+    </MainContainer>
+  );
 };

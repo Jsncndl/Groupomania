@@ -7,6 +7,7 @@ describe("<ModifyProfile /> form should render", () => {
     const firstNameInput = screen.getByTestId("firstnameinput");
     expect(firstNameInput).toHaveValue("");
   });
+
   it("Should render input to change password", () => {
     render(<ModifyProfile />);
     const buttonNewPassword = screen.getByTestId("buttonNewPassword");

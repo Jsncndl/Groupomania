@@ -134,7 +134,7 @@ export const UserProvider = (props: any) => {
     if (isUserModified) {
       setIsUserModified(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isLocalstorageChecked,
     userDetails.userId,
