@@ -126,7 +126,6 @@ export const Signup: React.FC = () => {
             name="firstName"
             type="text"
             onChange={handleChange}
-            value=""
           />
           <LabelContainer htmlFor="lastName">Nom</LabelContainer>
           <InputContainer name="lastName" type="text" onChange={handleChange} />
