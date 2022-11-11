@@ -39,20 +39,8 @@ exports.login = (req, res, next) => {
           if (!valid) {
             return res.status(401).json({ message: "Wrong email / password" });
           }
-          if (user.isAdmin) {
-            return res.status(200).json({
-              userId: user._id,
-              token: jwt.sign({ userId: user._id }, process.env.TOKEN_KEY, {
-                expiresIn: "24h",
-              }),
-              lastName: user.lastName,
-              firstName: user.firstName,
-              userImage: user.userImage,
-              email: user.email,
-              isAdmin: user.isAdmin,
-            });
-          }
-          res.status(200).json({
+          
+          return res.status(200).json({
             userId: user._id,
             token: jwt.sign({ userId: user._id }, process.env.TOKEN_KEY, {
               expiresIn: "24h",
@@ -61,6 +49,7 @@ exports.login = (req, res, next) => {
             firstName: user.firstName,
             userImage: user.userImage,
             email: user.email,
+            isAdmin: user.isAdmin
           });
         })
         .catch((error) => {
